@@ -1,0 +1,532 @@
+@prefix : <http://acme_services.org/itil_im_service#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix lss-usdl: <http://w3id.org/lss-usdl/v2#> .
+
+@prefix dbpedia: <http://dbpedia.org/#> .
+@prefix dbpediar: <http://dbpedia.org/resource/> .
+@prefix itsmo: <http://ontology.it/itsmo/v1#> .
+
+
+# -----------------------------
+# Service System
+# -----------------------------
+
+:TheSevenStepImprovementService a lss-usdl:ServiceSystem ;
+  rdfs:label "ITIL Seven Step Improvement Service" ;
+  rdfs:comment "The Seven-Step Improvement Process is fundamental in supporting CSI and operates across the entire Service Lifecycle. It focuses on identifying improvement opportunities, not only for the processes and services, but also for the disciplines implemented as part of each of the Lifecycle stages, including the discipline of CSI itself." ;
+  lss-usdl:hasGoal :ContinualServiceImprovement ;
+
+  owl:sameAs dbpedia:The_seven_step_improvement_service ;
+  itsmo:hasAgreement itsmo:Agreement ;
+
+  lss-usdl:hasInteraction
+  		:DefineWhatToMeasure ,
+  		:DefineWhatCanMeasure ,
+  		:GatherData ,
+  		:ProcessData ,
+  		:AnalyseData ,
+  		:PresesentInformation ,
+  		:ImplementImprovements.
+
+
+# ---------------------------------
+# Define what you should measure
+# ---------------------------------
+
+:DefineWhatToMeasure a lss-usdl:Interaction ;
+	rdfs:label "Identify Stakeholders" ; 
+	rdfs:comment "Identify and link corporate vision to internal and external factors. The identified measurements should enable the provider to demonstrate value to the business by linking back through to key business drivers. " ; 
+	lss-usdl:hasGoal :IdentifyObjectives ; 
+	
+	lss-usdl:hasStep :DefineSourcesInformation ;
+	lss-usdl:hasStep :MapActivities ;
+	lss-usdl:hasStep :CreateReportWhatMeasure ;
+
+
+	lss-usdl:performedBy :ServiceContinualImprovementManager ; 
+	
+	lss-usdl:hasLocation :Office; 
+	
+	lss-usdl:receivesResource :ServiceLevelRequirements ; 
+	lss-usdl:receivesResource :ServiceCatalogue ; 
+	lss-usdl:receivesResource :DocumentedCompanyVision ; 
+	lss-usdl:receivesResource :DocumentedDepartmentsObjectives ; 
+	lss-usdl:createsResource :ReportWhatMeasure ;
+	
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeofReportWhatMeasure ] .      
+
+
+# ---------------------------------
+# Define what you can measure
+# ---------------------------------
+
+:DefineWhatCanMeasure a lss-usdl:Interaction ;
+	rdfs:label "Define what you can measure" ; 
+	rdfs:comment "Identify new service level requirements of the business, the IT capabilities and the available budgets to conduct a gap analysis. We should be able to identify the opportunities for improvement." ;
+	lss-usdl:hasGoal :UnderstandWhatCanAccomplish ;
+	
+	lss-usdl:hasStep :CompileListTools;
+	lss-usdl:hasStep :PerfomGapAnalysis ;
+	lss-usdl:hasStep :IdentifyOpportunities ;
+	lss-usdl:hasStep :CreateReportCanMeasure ;
+	
+	lss-usdl:performedBy :ServiceContinualImprovementManager ;
+	
+	lss-usdl:hasLocation :Office;
+	
+	lss-usdl:receivesResource :ReportWhatMeasure;
+	lss-usdl:receivesResource :DocumentedProcedures ; 
+	lss-usdl:receivesResource :DocumentedProcessFlows ;
+	lss-usdl:receivesResource :ToolsManuals ;
+	lss-usdl:createsResource :ReportCanMeasure ;
+	
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfReportCanMeasure ] .      
+
+# ---------------------------------
+# Gathering the data
+# ---------------------------------
+
+:GatherData a lss-usdl:Interaction ;
+	rdfs:label "Gather the data" ; 
+	rdfs:comment "Define a monitoring plan and collect data. Data is gathered based on goals and objectives identified. At this point, the data is raw and no conclusions are drawn. " ;
+	lss-usdl:hasGoal :CollectData;
+	
+	lss-usdl:hasStep :DefineMonitoringActivities ;
+	lss-usdl:hasStep :DefineMonitoringStandarts ;
+	lss-usdl:hasStep :DefineMonitoringProcedures ;
+	lss-usdl:hasStep :DevelopMonitoringTools ;
+	lss-usdl:hasStep :GiveFormation ;
+	lss-usdl:hasStep :StartMonitoring ;
+	lss-usdl:hasStep :CollectData ;
+
+
+	lss-usdl:performedBy :ServiceContinualImprovementManager ;
+	lss-usdl:performedBy :CompanyStaff ;
+	
+	lss-usdl:hasLocation :Office;
+	lss-usdl:hasLocation :Restaurant;
+
+	lss-usdl:receivesResource :ReportCanMeasure;  
+	lss-usdl:consumesResource :MonitoringTools ;  
+	lss-usdl:createsResource :MonitoringPlan ;
+	lss-usdl:createsResource :CollectedData ;
+	
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfCollectedData ] .      
+
+# ---------------------------------
+# Processing the data
+# ---------------------------------
+
+:ProcessData a lss-usdl:Interaction ;
+	rdfs:label "Process the data" ; 
+	rdfs:comment "Its main goal is to process data from multiple sources into required format for the audience.  This can be seen as turning data into information." ;
+	lss-usdl:hasGoal :TransformDataToInformation ;
+	
+	lss-usdl:hasStep :DefineProcessingStandarts ;
+	lss-usdl:hasStep :DefineProcessingProcedures ;
+	lss-usdl:hasStep :StartProcessing ;
+	lss-usdl:hasStep :EvaluateProcessedData ;
+
+	lss-usdl:performedBy :ServiceContinualImprovementManager ;
+	lss-usdl:performedBy :Analyst ;
+	
+	lss-usdl:hasLocation :Office ;
+	
+	lss-usdl:receivesResource :CollectedData ; 
+	lss-usdl:createsResource :ProcessingPlan ;
+	lss-usdl:createsResource :ProcessedInformation ;   
+
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfProcessedInformation ] .   
+
+
+
+# ---------------------------------
+# Analysing the data
+# ---------------------------------
+
+:AnalyseData a lss-usdl:Interaction ;
+	rdfs:label "Analyse the data" ; 
+	rdfs:comment "The information becomes knowledge as it is analysed to identify service gaps, trends and the impact on business. This should allow us to develop an understanding of the real meaning of identified patterns and trends." ;
+	lss-usdl:hasGoal :TransformInformationToKnowledge ;
+
+	lss-usdl:hasStep :DefineWhatToAnalyse ;
+	lss-usdl:hasStep :AskQuestions ;
+	lss-usdl:hasStep :FindAnswers ;
+	lss-usdl:hasStep :CreateFinalReport ;
+
+	lss-usdl:performedBy :ServiceContinualImprovementManager ;
+	lss-usdl:performedBy :Analyst ;
+	
+	lss-usdl:hasLocation :Office ;
+
+	lss-usdl:receivesResource :ProcessedInformation ;
+	lss-usdl:createsResource :FinalReport ;  
+
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfFinalReport ] .   
+   
+
+# ---------------------------------
+# Presenting and using the information
+# ---------------------------------
+
+:PresentInformation a lss-usdl:Interaction ;
+	rdfs:label "Presenting and using the information" ; 
+	rdfs:comment "Communicate the information at the right level of detail for the audience and in a format that is understandable, provides value and will support informed decision-making." ;
+	lss-usdl:hasGoal :UseKnowledge ;
+
+	lss-usdl:hasStep :DefineAudience ;
+	lss-usdl:hasStep :DefineWhatToPresent ;
+	lss-usdl:hasStep :DefinePresentationPlan ;
+	lss-usdl:hasStep :CreatePresentation ;
+	lss-usdl:hasStep :GivePresentation ;
+	
+	lss-usdl:performedBy :ServiceContinualImprovementManager;
+
+	lss-usdl:hasLocation :Office;
+	lss-usdl:hasLocation :PlaceOfPresentation;
+
+	lss-usdl:receivesResource :FinalReport ;
+	lss-usdl:receivesResource :AudienceInformation ; 
+	lss-usdl:createsResource :Presentation ;      
+
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfFinalReport ] .   
+
+# ---------------------------------
+# Implementing corrective action
+# ---------------------------------
+
+:ImplementImprovements a lss-usdl:Interaction ;
+	rdfs:label "Implement corrective actions" ; 
+	rdfs:comment "The knowledge gained is used to optimise, improve and correct services. Managers identify issues and present solutions. The corrective actions that need to be taken to improve the service are communicated and explained to the organisation. Following this step the organisation establishes a new baseline and the cycle begins anew. " ;
+	lss-usdl:hasGoal :ImplementImprovement ;
+	lss-usdl:hasStep :GainKnowledge ;
+	lss-usdl:hasStep :IdentifyIssues;
+	lss-usdl:hasStep :CreateSolutions ;
+	lss-usdl:hasStep :CreatePlan ;
+	lss-usdl:hasStep :CommunicateOrganization;
+
+
+	lss-usdl:performedBy :SeniorManager;
+	lss-usdl:performedBy :ServiceContinualImprovementManager ;
+	
+	lss-usdl:hasLocation :MeiaDoseHeadquarters;
+	
+	lss-usdl:receivesResource :FinalReport ; 
+	lss-usdl:consumesResource :Presentation ;
+	lss-usdl:createsResource :ImprovementPlan .  
+
+# -----------------------------
+# Business Entities
+# -----------------------------
+
+:MeiaDoseCompany a gr:BusinessEntity ;
+	foaf:name "Meia Dose" ;
+	rdfs:comment "The company where the process takes place." .
+	
+:Restaurant a gr:BusinessEntity ;
+	foaf:name "Restaurant" ;
+	rdfs:comment "A Customer that participates in the business process." .
+
+
+# -----------------------------
+# Roles
+# -----------------------------
+:ServiceContinualImprovementManager a lss-usdl:Role;
+	rdfs:label "Service Continual Improvement Manager" ;
+	rdfs:comment "Although everybody within the organization has a role to play in continual improvement. The key role that is essential to the effective implementation of this process is the CSI Manager. " ;
+  	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+:SeniorManager a lss-usdl:Role;
+	rdfs:label "Senior Manager" ;
+	rdfs:comment "Senior Manager is responsible for defining business strategies and approve improvements " ;
+  	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+:Analyst a lss-usdl:Role;
+	rdfs:label "Analyst" ;
+	rdfs:comment "This role is responsible for analyse the gather data and give support to Service Continual Improvement Manager " ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+:CompanyStaff a lss-usdl:Role;
+	rdfs:label "Company Staff";
+	rdfs:comment "This role is responsible for gather the data all across the company's processes " ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+
+# -----------------------------
+# Goals
+# -----------------------------
+:IdentifyObjectives a lss-usdl:Goal; 
+	rdfs:label "Identify business mission";
+	rdfs:comment "Identify mission and align with key factors." .
+
+:UnderstandWhatCanAccomplish a lss-usdl:Goal;
+	rdfs:label "Understand what we can measure";
+	rdfs:comment "Identify available tools and identify what we can measure" .
+
+
+:CollectData a lss-usdl:Goal; 
+	rdfs:label "Collect Data";
+	rdfs:comment "Collect important information from all the company." .
+
+
+:TransformDataToInformation a lss-usdl:Goal; 
+	rdfs:label "Transform data into standart information";
+	rdfs:comment "Process the collected data into information for analyse." .
+
+
+:TransformInformationToKnowledge a lss-usdl:Goal; 
+	rdfs:label "Tranform information into knowledge";
+	rdfs:comment "Analyse the information to extract knowledge." .
+
+
+
+:UseKnowledge a lss-usdl:Goal; 
+	rdfs:label "Use knowlege";
+	rdfs:comment "Present the acquire knowledge to a specific audience." .
+
+
+:ImplementImprovement
+	rdfs:label "Implement improvements";
+	rdfs:comment "Use the gained knowledge to improve the company." .
+
+
+# -----------------------------
+# Locations
+# -----------------------------
+:Office a lss-usdl:Location;
+	rdfs:label "CSI Manager Office".
+
+:MeiaDoseHeadquarters a lss-usdl:Location;
+	rdfs:label "Company's physical space";
+	rdfs:comment "The company's headquarters office is in Coimbra." .
+
+
+# -----------------------------
+# Resources
+# -----------------------------
+
+:ServiceLevelRequirements a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Service Description Document" ;
+	rdfs:comment "A document which describes a service requirement" .
+
+:ServiceCatalogue a lss-usdl:KnowledgeResource;
+	rdfs:label "Service Catalogue" ;
+	rdfs:comment "It contains all the company's services" . 
+
+:DocumentedCompanyVision a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Company's vision and mission" ;
+	rdfs:comment "It contains the company's visions, mission and estrategies." . 
+
+:DocumentedDepartmentsObjectives a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Each department's goals" ;
+	rdfs:comment "It contains each departments objectives." . 
+
+:ReportWhatMeasure a dbpediar:Report ;
+	rdfs:label "What to measure report" ;
+	rdfs:comment "A report with what we should measure." .
+
+:DocumentedProcedures a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Process procedures" ;
+	rdfs:comment "Documentation of each processes procedures." .
+
+:DocumentedProcessFlows a lss-usdl:KnowledgeResource ;
+	rdfs:label "Process flow-chart" ;
+	rdfs:comment "Documentation of each processes flows." .
+
+:ToolsManuals a lss-usdl:KnowledgeResource;
+	rdfs:label "Tool manual instruction" ;
+	rdfs:comment "Manual instruction of available tools." .
+
+
+:ReportCanMeasure a dbpediar:Report ;
+	rdfs:label "What can measure report" ;
+	rdfs:comment "A report with what we can measure." .
+
+:MonitoringPlan a lss-usdl:KnowledgeResource ;
+	rdfs:label "Data monitoring plan" ;
+	rdfs:comment "A document with all the relevant information for monitoring actvities and collect data." .
+
+:CollectedData a lss-usdl:KnowledgeResource ;
+	rdfs:label "Collected data" ;
+	rdfs:comment "Data collected from all the company." .
+
+
+:ProcessingPlan a lss-usdl:KnowledgeResource;
+	rdfs:label "Information processing plan" ;
+	rdfs:comment "A report with what we should measure." .
+
+:ProcessedInformation a lss-usdl:KnowledgeResource; 
+	rdfs:label "What to measure report" ;
+	rdfs:comment "A report with what we should measure." .  
+
+:FinalReport a dbpediar:Report ;   
+	rdfs:label "Final report" ;
+	rdfs:comment "A report with the knowledge gained by analysing the processed information. " .
+
+:AudienceInformation a lss-usdl:KnowledgeResource; 
+	rdfs:label "Audience information" ;
+	rdfs:comment "Documentation about the audience." .
+
+:Presentation a lss-usdl:KnowledgeResource;  
+	rdfs:label "Presentation" ;
+	rdfs:comment "The presentation (in any format) to show the stakeholders." .  
+
+:ImprovementPlan a lss-usdl:KnowledgeResource; 
+	rdfs:label "Improvement plan" ;
+	rdfs:comment "Documentation with the changes to made in the company and how to do it." .
+
+# -----------------------------
+# Steps
+# -----------------------------
+
+:DefineSourcesInformation a lss-usdl:Step;
+	rdfs:label "Define sources of information";
+	rdfs:comment "It can be companys mission statements for example." .
+
+:MapActivities a lss-usdl:Step ;
+	rdfs:label "Map the activities to measure";
+	rdfs:comment "Map the activities of the service or service management processes that need to be measured".
+
+:CreateReportWhatMeasure a lss-usdl:Step ;
+	rdfs:label "Create a report";
+	rdfs:comment "Create a report with what we should measure.".
+
+:CompileListTools a lss-usdl:Step ;
+	rdfs:label "Compile a list of tools";
+	rdfs:comment "Compile a list of available tools and all the related information like manuals to fully understand its capabilities.".
+
+:PerfomGapAnalysis a lss-usdl:Step ;
+	rdfs:label "Perfom a gap analysis";
+	rdfs:comment "Analyse the services and its needs.".
+
+:IdentifyOpportunities a lss-usdl:Step ;
+	rdfs:label "Identify opportunities";
+	rdfs:comment "Identify a oppornity for improvement.".
+
+:CreateReportCanMeasure a lss-usdl:Step ;
+	rdfs:label "Create a report";
+	rdfs:comment "Creat a with what we should measure.".
+
+:DefineMonitoringActivities a lss-usdl:Step ;
+	rdfs:label "Define activities for monitoring";
+	rdfs:comment "Choose activities which are import to monitor.".
+
+:DefineMonitoringStandarts a lss-usdl:Step ;
+	rdfs:label "Define monitoring standarts";
+	rdfs:comment "Defining the format of collected data so it can be easily processed.".
+
+:DefineMonitoringProcedures a lss-usdl:Step ;
+	rdfs:label "Define monitoring procedures";
+	rdfs:comment "Defining the procedures(how) to collect data".
+
+:DevelopMonitoringTools a lss-usdl:Step ;
+	rdfs:label "Develop monitoring tools";
+	rdfs:comment "This step only should be taken if it is crucial. This may involve time and money.".
+
+:GiveFormation a lss-usdl:Step ;
+	rdfs:label "Give formation";
+	rdfs:comment "Communicate and form the staff that will collect the data".
+
+:StartMonitoring a lss-usdl:Step ;
+	rdfs:label "Start monitoring".	
+
+:CollectData a lss-usdl:Step ;
+	rdfs:label "Collect data".
+
+:DefineProcessingStandarts a lss-usdl:Step ;
+	rdfs:label "Define processing standarts";
+	rdfs:comment "Defining the format of processed information so it can be understood.".
+
+:DefineProcessingProcedures a lss-usdl:Step ;
+	rdfs:label "Define processing procedures";
+	rdfs:comment "Defining the procedures(how) to process data.".
+
+:StartProcessing a lss-usdl:Step ;
+	rdfs:label "Start processing".
+
+:EvaluateProcessedData a lss-usdl:Step ;
+	rdfs:label "Evaluate processed data";
+	rdfs:comment "Understand if the data is properly processed.".
+
+
+:DefineWhatToAnalyse a lss-usdl:Step ;
+	rdfs:label "Define what to analyse";
+	rdfs:comment "Understand where are the most important information.".
+
+:AskQuestions a lss-usdl:Step ;
+	rdfs:label "Ask questions";
+	rdfs:comment "It's very important to ask the right questions when analysing the information. This will help us to identify the problems.".
+
+:FindAnswers a lss-usdl:Step ;
+	rdfs:label "Find answers";
+	rdfs:comment "This may be a trick step because it involves much thinking and revising the analyse multiple times.".
+
+:CreateFinalReport a lss-usdl:Step ;
+	rdfs:label "Create a report";
+	rdfs:comment "Create a report with the main findings.".
+
+:DefineAudience a lss-usdl:Step ;
+	rdfs:label "Define audience";
+	rdfs:comment "It's important to understand who our audience is in order to approach them in a effective way.".
+
+:DefineWhatToPresent a lss-usdl:Step ;
+	rdfs:label "Define what to present";
+	rdfs:comment "We won't show everything that we have acknowledge but only the essential to suit purpose.".
+
+:DefinePresentationPlan a lss-usdl:Step ;
+	rdfs:label "Define a presentation plan ";
+	rdfs:comment "Defining a presentation template to create structered presentation guidelines.".
+
+:CreatePresentation a lss-usdl:Step ;
+	rdfs:label "Create the presentation".
+
+:GivePresentation a lss-usdl:Step ;
+	rdfs:label "Give the presentation";
+	rdfs:comment "Set the date and the place and present the knowledge.".
+
+:GainKnowledge a lss-usdl:Step ;
+	rdfs:label "Gain knowledge".
+
+:IdentifyIssues a lss-usdl:Step ;
+	rdfs:label "Identify issues".
+
+:CreateSolutions a lss-usdl:Step ;
+	rdfs:label "Create solution".
+
+:CreatePlan a lss-usdl:Step ;
+	rdfs:label "Create a improvement plan".
+
+:CommunicateOrganization a lss-usdl:Step;
+	rdfs:label "Communicate to organization";
+	rdfs:comment "Communicate to the organization the changes and their part in the implementation".
+
+# -----------------------------
+# Processes
+# -----------------------------
+
+:TheSevenStepImprovementService a lss-usdl:Process ;
+	rdfs:label "The Seven Step Improvement Service" .
+
+# -----------------------------
+# Time
+# -----------------------------
+
+
