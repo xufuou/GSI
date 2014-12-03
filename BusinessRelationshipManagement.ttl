@@ -1,0 +1,262 @@
+@prefix : <http://acme_services.org/itil_im_service#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix lss-usdl: <http://w3id.org/lss-usdl/v2#> .
+
+@prefix dbpedia: <http://dbpedia.org/#> .
+@prefix dbpediar: <http://dbpedia.org/resource/> .
+@prefix itsmo: <http://ontology.it/itsmo/v1#> .
+
+
+# -----------------------------
+# Service System
+# -----------------------------
+
+:BusinessRelationshipManagementService a lss-usdl:ServiceSystem ;
+  rdfs:label "ITIL Business Relationship Management" ;
+  rdfs:comment "Business Relationship Management pretends to establish and maintain an effective business relationship between the service provider and the customer based on understanding the customer and its business needs." ;
+  lss-usdl:hasGoal :MaintainRelationship ;
+
+  owl:sameAs dbpedia:Business_relationship_management ;
+  itsmo:hasAgreement itsmo:Agreement ;
+
+  lss-usdl:hasInteraction
+  		:IdentifyStakeholders ,
+  		:DefineOutcomes ,
+  		:SpecifyStrategy ,
+  		:DefineBusinessCase ,
+  		:ValidatePatternOfBusinessActivity .
+
+
+# ---------------------------------
+# Identify Stakeholders
+# ---------------------------------
+
+:IdentifyStakeholders a lss-usdl:Interaction ;
+	rdfs:label "IdentifyStakeholders" ; 
+	rdfs:comment "Understanding the customer and its business objectives and how these translate into service requirements." ; 
+	lss-usdl:hasGoal :UnderstandTheCustomer ; 
+	lss-usdl:hasStep :DocumentCustomerNeeds ;
+	lss-usdl:hasStep :AnalyzeDocument ;
+	lss-usdl:performedBy :BusinessRelationshipManager ; 
+	lss-usdl:performedBy :Customer;
+	lss-usdl:hasLocation :Office; 
+	lss-usdl:receivesResource :Surveys ; 
+	lss-usdl:consumesResource :CustomersData ; 
+	lss-usdl:createsResource :CustomerReport .
+
+
+# ---------------------------------
+# Define Outcomes
+# ---------------------------------
+
+:DefineOutcomes a lss-usdl:Interaction ;
+	rdfs:label "Define Outcomes" ; 
+	rdfs:comment "Helping the customer formulate the requirements for new services and develop the customer’s business case for investment in them. For the sake of clarity, outcomes are classified and codified with reference tags that can be used in various contexts across the Service Lifecycle." ;
+	lss-usdl:hasGoal :FormulateServicesRequirements ;
+	lss-usdl:hasStep :IdentifyOutcomes;
+	lss-usdl:hasStep :ClassifyOutcomes ;
+	lss-usdl:hasStep :CodifyOutcomes ;
+	lss-usdl:performedBy :BusinessRelationshipManager ;
+	lss-usdl:hasLocation :Office;
+	lss-usdl:receivesResource :CustomerReport ; 
+	lss-usdl:consumesResource :CustomerReport ; 
+	lss-usdl:createsResource :DocumentedOutcomes ;
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfOutcomeCodification ] .      
+
+# ---------------------------------
+# Specify Strategy
+# ---------------------------------
+
+:SpecifyStrategy a lss-usdl:Interaction ;
+	rdfs:label "Specify Strategy" ; 
+	rdfs:comment "Identifying changes that may affect the customer’s use of or requirements for services. Services differ primarily by how they create value and in what context. Service archetypes are like business models for services. They define how service providers act on behalf of customers to create value." ;
+	lss-usdl:hasGoal :TranslateOutcometoRequirements;
+	lss-usdl:hasStep :AccessServiceCatalogue ;
+	lss-usdl:hasStep :EvaluateServices ;
+	lss-usdl:hasStep :DefineRequirements ;
+	lss-usdl:performedBy :BusinessRelationshipManager ;
+	lss-usdl:hasLocation :Office;
+	lss-usdl:receivesResource :DocumentedOutcomes ; 
+	lss-usdl:consumesResource :DocumentedOutcomes ;
+	lss-usdl:consumesResource :ServiceCatalogue ;  
+	lss-usdl:createsResource :DocumentedRequirements ;
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfRequirementsDefinition ] .      
+
+# ---------------------------------
+# Define Business Case
+# ---------------------------------
+
+:DefineBusinessCase a lss-usdl:Interaction ;
+	rdfs:label "Define Business Case" ; 
+	rdfs:comment "Identifying developments in technology and related matters that may provide opportunities for better services or lower costs for the customer" ;
+	lss-usdl:hasGoal :IdentifyOpportunities ;
+	lss-usdl:hasStep :ExploitNewTechnologyDevelopmentsAndInnovations  ;
+	lss-usdl:hasStep :DefineServiceChanges ;
+	lss-usdl:performedBy :BusinessRelationshipManager ;
+	lss-usdl:hasLocation :Office;
+	lss-usdl:receivesResource :DocumentedRequirements ; 
+	lss-usdl:consumesResource :DocumentedRequirements ;
+	lss-usdl:createsResource :DocumentedImpactOnServices .    
+
+
+
+# ---------------------------------
+# Validate Pattern Of Business Activity
+# ---------------------------------
+
+:ValidatePatternOfBusinessActivity a lss-usdl:Interaction ;
+	rdfs:label "Validate Pattern Of Business Activity" ; 
+	rdfs:comment "Ensuring that the delivery and operation of services, including, for example, the transition into full operation, continues to recognize and satisfy the customer’s business needs." ;
+	lss-usdl:hasGoal :EnsureCustomersSatisfaction ;
+	lss-usdl:hasStep :DocumentServicesEffectivenessAndEfficiency ;
+	lss-usdl:hasStep :DocumentCustomerSatisfaction ;
+	lss-usdl:performedBy :Customer;
+	lss-usdl:performedBy :BusinessRelationshipManager ;
+	lss-usdl:hasLocation :Office;
+	lss-usdl:receivesResource :Surveys ;
+	lss-usdl:receivesResource :DocumentedImpactOnServices ; 
+	lss-usdl:consumesResource :DocumentedImpactOnServices ;
+	lss-usdl:consumesResource :ServicePerformanceData ;
+	lss-usdl:createsResource :CustomersData .      
+
+
+# -----------------------------
+# Business Entities
+# -----------------------------
+
+:MeiaDoseCompany a gr:BusinessEntity ;
+	foaf:name "Meia Dose" ;
+	rdfs:comment "The company where the IM process happend" .
+	
+:Restaurant a gr:BusinessEntity ;
+	foaf:name "Restaurant" ;
+	rdfs:comment "Other company that participate of the business process" .
+
+
+# -----------------------------
+# Roles
+# -----------------------------
+
+:BusinessRelationshipManager a lss-usdl:Role;
+	rdfs:label "Business Relationship Manager" ;
+	rdfs:comment "The primary responsibility of the Business Relationship Manager, International IT is to partner with International Business customer in identifying, understanding, and meeting their IT needs through the engagement of the Portugal IT team and external technology partners. " ;
+  	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+:Customer a lss-usdl:Role;
+	rdfs:label "A customer it could be a person or a restaurant" .
+
+# -----------------------------
+# Goals
+# -----------------------------
+:MaintainRelationship a lss-usdl:Goal ;
+	rdfs:label "Maintain bussiness relationship";
+	rdfs:comment "Maintain a bussiness relationship with customers." .
+
+:UnderstandTheCustomer a lss-usdl:Goal ; 
+	rdfs:label "Understand costumer";
+	rdfs:comment "Understand the customer needs." .
+
+:FormulateServicesRequirements a lss-usdl:Goal ;
+	rdfs:label "Formulate Services Requirements";
+	rdfs:comment "Based on customer needs formulate service requirements." . 
+
+:TranslateOutcometoRequirements a lss-usdl:Goal ;
+	rdfs:label "Translate outcomes into service requirements" ;
+	rdfs:comment "Translate outcomes into service requirements." .
+
+:IdentifyOpportunities a lss-usdl:Goal  ;
+	rdfs:label "Identify business opportunities" ;
+	rdfs:comment "Identify business opportunities." .
+
+:EnsureCustomersSatisfaction a lss-usdl:Goal  ;
+	rdfs:label "Ensure the customers satisfaction" ;
+	rdfs:comment "Ensure the customers satisfaction." .
+# -----------------------------
+# Locations
+# -----------------------------
+:Office a lss-usdl:Location;
+	rdfs:label "Office";
+	rdfs:comment "Business Relationship Manager office" .
+
+
+# -----------------------------
+# Resources
+# -----------------------------
+
+:Surveys a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Survey";
+	rdfs:comment "Files with customer's answers about services" . 
+
+:CustomersData a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Customer data";
+	rdfs:comment "A document with relevant data about customer's needs" . 
+
+:CustomerReport a dbpediar:Report ; 
+	rdfs:label "Report of customer";
+	rdfs:comment "Identify business opportunities" . 
+
+:DocumentedOutcomes a lss-usdl:KnowledgeResource ;
+	rdfs:label "Document outcome";
+	rdfs:comment "A document with identified outcomes" . 
+
+:ServiceCatalogue a lss-usdl:KnowledgeResource ;  
+	rdfs:comment "Service catalogue is a document where all the company's services are listed" .
+
+:DocumentedRequirements a lss-usdl:Resource ;
+	rdfs:comment "A document with identified service requirements" .  
+
+:DocumentedImpactOnServices a lss-usdl:KnowledgeResource ;
+	rdfs:comment "A document with proved impact on services" . 
+
+:ServicePerformanceData a lss-usdl:KnowledgeResource ;   
+	rdfs:comment "Identify business opportunities" .
+
+# -----------------------------
+# Steps
+# -----------------------------
+
+:DocumentCustomerNeeds a lss-usdl:Step;
+	rdfs:label "Document customer needs".
+
+:AnalyzeDocument a lss-usdl:Step ;
+	rdfs:label "Analyze document".
+
+:IdentifyOutcomes a lss-usdl:Step;
+	rdfs:label "Identify outcomes".
+
+:ClassifyOutcomes a lss-usdl:Step;
+	rdfs:label "Classify outcomes".
+
+:CodifyOutcomes a lss-usdl:Step ;
+	rdfs:label "Codify outcomes".
+
+:AccessServiceCatalogue a lss-usdl:Step ;
+	rdfs:label "Access service catalogue ".
+
+:EvaluateServices a lss-usdl:Step ;
+	rdfs:label "Evaluate services".
+
+:DefineRequirements a lss-usdl:Step ;
+	rdfs:label "Define requirements".
+
+:ExploitNewTechnologyDevelopmentsAndInnovations a lss-usdl:Step  ;
+	rdfs:label "Exploit new technology developments and innovations".
+
+:DefineServiceChanges a lss-usdl:Step ;
+	rdfs:label "Define service changes".
+
+:DocumentServicesEffectivenessAndEfficiency a lss-usdl:Step ;
+	rdfs:label "Document service effectiveness and efficiency".
+
+:DocumentCustomerSatisfaction a lss-usdl:Step ;
+	rdfs:label "Document customer satisfaction".
