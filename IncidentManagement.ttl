@@ -1,0 +1,254 @@
+@prefix : <http://acme_services.org/itil_im_service#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix lss-usdl: <http://w3id.org/lss-usdl/v1#> .
+
+@prefix dbpedia: <http://dbpedia.org/#> .
+@prefix dbpediar: <http://dbpedia.org/resource/> .
+@prefix itsmo: <http://ontology.it/itsmo/v1#> .
+
+
+# -----------------------------
+# Incident Management
+# -----------------------------
+
+:IncidentManagementService a lss-usdl:ServiceSystem ;
+  rdfs:label "ITIL Incident Management Service" ;
+  rdfs:comment "A service system for Incident Management, based on ITIL specs. The main objective of the incident management process is to resume the regular state of affairs as quickly as possible and minimize the impact on business processes." ;
+  lss-usdl:hasGoal :SolveIncident ;
+
+  owl:sameAs dbpedia:Incident_Management ;
+  itsmo:hasAgreement itsmo:Agreement ;
+
+  lss-usdl:hasInteraction 
+  		:IncidentIdentificationAndLogging ,
+		:IncidentPrioritizationAndInitialSupport ,
+		:ServiceRequest ,
+		:InvestigationDiagnosis ,
+		:ResolutionRecovery ,
+		:IncidentClosure ;
+
+
+# ---------------------------------
+# Incident is identified and logged
+# ---------------------------------
+
+:IncidentIdentificationLogging a lss-usdl:Interaction ;
+	rdfs:label "An incident is logged" ; 
+	rdfs:comment "Incidents reported to the Service Desk must be logged with the date and time stamp that they were generated." ; 
+	lss-usdl:hasGoal :DealWithReportedIncident ; 
+	lss-usdl:hasStep :FindAnomaly ;
+	lss-usdl:hasStep :CheckSystemLogs ;
+	lss-usdl:hasStep :Record incident ;
+	lss-usdl:performedBy :ServiceDeskMember ; 
+	lss-usdl:hasLocation :ServiceDesk; 
+	lss-usdl:consumesResource :ReporterData ; 
+	lss-usdl:consumesResource :IncidentData ; 
+	lss-usdl:createsResource :IncidentRecord ;
+	lss-usdl:createsResource :IncidentID ;
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :IncidentLoggingTime ] .
+
+	
+# ------------------------------------------------
+# Incident is pririotized and give initial support
+# ------------------------------------------------
+
+:IncidentPrioritizationInitialSupport a lss-usdl:Interaction ;
+	rdfs:label "Pririotize Incident and Give Initial Support" ;
+	rdfs:comment "The initial diagnosis of incidents is mainly a human process. The Service Desk Member looks at the information within the incident and communicates with the user to diagnose the problem." ; 
+	lss-usdl:hasGoal :GiveInitialSupport ;
+	lss-usdl:hasStep :CheckCategories ;
+	lss-usdl:hasStep :AttributeCategory ;
+	lss-usdl:hasStep :PrioritizeIncident ;
+	lss-usdl:hasStep :GivePrimaryAnalysisAndFeedback ;
+	lss-usdl:performedBy :ServiceDeskMember ;
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:receivesResource :IncidentRecord ;
+	lss-usdl:consumeResource :IncidentRecord ;
+	lss-usdl:createsResource :IncidentReport ;
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :IncidentCategorizationTime ] .
+
+
+
+# -----------------------------
+# Incident Investigation and Diagnosis
+# -----------------------------
+
+:InvestigationDiagnosis a lss-usdl:Interaction ;
+	rdfs:label "Investigate and diagnose Incident" ;
+	rdfs:comment "This process deals with the investigation of the incident and the gathering of diagnostic data"
+	lss-usdl:hasGoal :DiagnoseIncident ;
+	lss-usdl:hasStep :ReportAnalysis ;
+	lss-usdl:hasStep :ComparePriorIncidents ;
+	lss-usdl:hasStep :DiagnoseIncident ;
+	lss-usdl:performedBy :ServiceDeskMember ;
+	lss-usdl:performedBy :TechnicalStaffMember ;
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:hasLocation :MeiaDoseCompany ;
+	lss-usdl:receivesResource :IncidentReport ;
+	lss-usdl:consumeResource :IncidentReport ;
+	lss-usdl:hasTime [ a lss-usdl:Time ;
+     lss-usdl:hasTemporalEntity :InvestigationDiagnosisTime] .
+
+# -----------------------------
+# Incident Escalation
+# -----------------------------
+
+:IncidentEscalation a lss-usdl:Interaction ;
+	rdfs:label "Escalation of Incident" ;
+	rdfs:comment
+	lss-usdl:performedBy :ServiceDeskMember ;
+	lss-usdl:performedBy :ServiceDeskManager ;
+	lss-usdl:hasGoal :SolveIncident ;
+	lss-usdl:hasLocation :MeiaDoseCompany ;
+	lss-usdl:receivesResource :IncidentReport ;
+	lss-usdl:consumeResource :IncidentReport .
+
+# -----------------------------
+# Incident Resolution Recovery
+# -----------------------------
+
+:ResolutionRecovery a lss-usdl:Interaction ;
+	rdfs:label "Resolution and recovery de systems affected by Incident" ;
+	rdfs:comment "This process covers the steps required to resolve the incident, often by interfacing with the change management process to implement remedial actions. "
+	lss-usdl:performedBy :ServiceDeskMember ;
+	lss-usdl:hasGoal :SolveIncident ;
+	lss-usdl:hasStep :CheckPredifinedProcedures ;
+	lss-usdl:hasStep :ApplyProcedures ;
+	lss-usdl:hasStep :RollBackSystemState ;
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:hasLocation :UserDesk ;
+	lss-usdl:receivesResource :IncidentReport ;
+	lss-usdl:consumeResource :IncidentReport ;
+	lss-usdl:hasTime [ a lss-usdl:Time ;
+    lss-usdl:hasTemporalEntity :ResolutionRecoveryTime] .
+
+
+# -----------------------------
+# Incident Closure
+# -----------------------------
+
+:IncidentClosing a lss-usdl:CustomerInteraction ;
+	rdfs:label "Close Incident" ;
+	rdfs:comment "This process ensures that the customer is satisfied that the incident has been resolved prior to closing the incident record. "
+	lss-usdl:performedBy :ServiceDeskMember ;
+	lss-usdl:hasGoal :IncidentTraceability ;
+	lss-usdl:hasStep :FileReport
+	lss-usdl:hasStep :AccessSatisfaction
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:receivesResource :IncidentReport ;
+	lss-usdl:consumeResource :IncidentReport ;
+	lss-usdl:hasTime [ a lss-usdl:Time ;
+    lss-usdl:hasTemporalEntity :IncidentClosingTime] .
+			 
+
+# -----------------------------
+# Business Entities
+# -----------------------------
+
+:MeiaDoseCompany a gr:BusinessEntity ;
+	foaf:name "Meia Dose" ;
+	rdfs:comment "The company where the IM process happend" .
+	
+:Restaurant a gr:BusinessEntity ;
+	foaf:name "Restaurant" ;
+	rdfs:comment "Other company that participate of the IM process" .
+
+
+# -----------------------------
+# Roles
+# -----------------------------
+
+:IncidentManager a lss-usdl:Role ;
+	rdfs:label "Incident Manager" ;
+	rdfs:comment "The person who owns the results of the Incident Management process" ;
+  lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+  
+:EndUser a lss-usdl:Role ;
+	rdfs:label "End User" ;
+	rdfs:comment "The end users and employees of a company that experience difficulties with IT." ;  
+    lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+    
+:ServiceDeskManager a lss-usdl:Role ;
+	rdfs:label "Service Desk Manager" ;
+	rdfs:comment "Functions as the primary point of contact for incidents reported from users." ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+:TechnicalStaff a lss-usdl:Role ;
+	rdfs:label "Technical Staff" ;
+	rdfs:comment "Support Technical Staff" ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+# -----------------------------
+# Goals
+# -----------------------------
+
+:SolveIncident a lss-usdl:Goal ;
+	rdfs:label "Restore normal service operation as quickly as possible" ;
+	rdfs:comment "It should minimize the adverse impact on business operations" .
+
+:OpenIncident a lss-usdl:Goal ;
+	rdfs:label "Start Incident management process instance" ;
+	rdfs:comment "Open an Incident to the IM process" .
+
+:DiagnoseIncident a lss-usdl:Goal ;
+	rdfs:label "Diagnose the incident cause" ;
+	rdfs:comment "Analyst diagnose incident cause" .
+
+:IncidentTraceability a lss-usdl:Goal ;
+	rdfs:label "Traceability of Incidents" ;
+	rdfs:comment "Allow follow up and audit" .
+
+:ClassifyIncident a lss-usdl:Goal ;
+	rdfs:label "Incident Classification" ;
+	rdfs:comment "Helps to order IM process" .
+
+
+# -----------------------------
+# Locations
+# -----------------------------
+
+:ServiceDesk a lss-usdl:Location;
+  rdfs:label "Service Desk Offices".
+#  lss-usdl:isLocationFrom <http://sws.geonames.org/3441575/>.
+
+:UserOffice a lss-usdl:Location;
+  rdfs:label "User office".
+#  lss-usdl:isLocationFrom <http://sws.geonames.org/3441575/>.
+
+
+
+# -----------------------------
+# Resources
+# -----------------------------
+
+# We should define Incident as a physical or KnowledgeResource resource?
+# An unplanned interruption or quality reduction to an IT service
+
+:IncidentRegister a lss-usdl:KnowledgeResource ;
+	rdfs:label "Incident knowledge base" ;
+	rdfs:comment "Register of all relevant incident information" ;
+	lss-usdl:hasQualitativeValue :URN, :Priority, :UserInfo, :SymptomsDescription ;
+	lss-usdl:hasQuantitativeValue :IncidentCategorization .
+
+
+# Linked Resources from DBPedia
+
+:IncidentID a dbpediar:Identifier ;
+	rdfs:label "Incident ID" .
+
+:IncidentReport a dbpediar:Report ;
+	rdfs:label "Report" .
+	
+#				a dbpediar:Form_\(Document\);
+
+
