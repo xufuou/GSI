@@ -1,0 +1,230 @@
+@prefix : <http://acme_services.org/itil_im_service#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix lss-usdl: <http://w3id.org/lss-usdl/v2#> .
+
+@prefix dbpedia: <http://dbpedia.org/#> .
+@prefix dbpediar: <http://dbpedia.org/resource/> .
+@prefix itsmo: <http://ontology.it/itsmo/v1#> .
+
+
+# -----------------------------
+# Service System
+# -----------------------------
+
+:ChangeManagementService a lss-usdl:ServiceSystem ;
+	rdfs:label "ITIL Change Management Service" ;
+  	rdfs:comment "A service system for Change Management, based on ITIL specs. Change Management is responsible for managing Change processes involving hardware, communications equipment and software, system software, ’live’ applications software and all documentation and procedures associated with the running, support and maintenance of live systems." ;
+  	lss-usdl:hasGoal :ImplementChanges ;
+
+  	owl:sameAs dbpedia:Change_Management ;
+  	itsmo:hasAgreement itsmo:Agreement ;
+
+  	lss-usdl:hasInteraction 
+  		:CreateRFC ,
+		:EvaluateRFC ,
+		:BuildChange ,
+		:UndoChange .
+
+
+# ---------------------------------
+# Create RFC
+# ---------------------------------
+
+:CreateRFC a lss-usdl:Interaction ;
+	rdfs:label "A RFC is created" ; 
+	rdfs:comment "Creating a Request For Change associated with a Ci, a Change Requester, a Category and a Priority" ; 
+	lss-usdl:hasGoal :Communicate ; 
+	
+	lss-usdl:hasStep :AssociateWithACi ;
+	lss-usdl:hasStep :AssociateAChangeRequester ;
+	
+	lss-usdl:performedBy :ChangeRequester ; 
+	
+	lss-usdl:hasLocation :Office; 
+	
+	lss-usdl:receivesResource :ChangeData ; 
+	lss-usdl:createsResource :RFCReport ;
+
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :SubmissionTime ] .
+
+
+
+# ------------------------------------------------
+# Evaluate
+# ------------------------------------------------
+
+:EvaluateRFC a lss-usdl:Interaction ;
+	rdfs:label "RFC Review" ;
+	rdfs:comment "The Change Coordinator reviews the RFC, he has access to all the information the Change Requester provided." ; 
+	lss-usdl:hasGoal :AssessRisk ;
+	
+	lss-usdl:hasStep :RFCReview ;
+	lss-usdl:hasStep :ViewAssociatedCi ;
+	
+	lss-usdl:performedBy :ChangeCoordinator ;
+	lss-usdl:performedBy :CAB ;
+	
+	lss-usdl:hasLocation :Office ;
+
+	lss-usdl:receivesResource :RFCReport ;
+	lss-usdl:createsResource :ChangeEvaluationReport ;
+	
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :EvaluationTime ] .
+
+
+# ------------------------------------------------
+# Build Change
+# ------------------------------------------------
+
+:BuildChange a lss-usdl:Interaction ;
+	rdfs:label "Change Implementation" ;
+	rdfs:comment "A change is built and the Ci attributes automatically modified in the CMDB." ; 
+	
+	lss-usdl:hasGoal :SolveIssue ;
+	
+	lss-usdl:hasStep :Implement ;
+
+	lss-usdl:performedBy :ChangeAgent ;
+	
+	lss-usdl:hasLocation :Office ;
+	
+	lss-usdl:receivesResource :ChangeEvaluationReport ;
+	lss-usdl:createsResource :ChangeReport ;
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :BuildTime ] .
+
+
+# ------------------------------------------------
+# Build Change
+# ------------------------------------------------
+
+:UndoChange a lss-usdl:Interaction ;
+	rdfs:label "Roll Back Changes" ;
+	rdfs:comment "If anything went wrong, there is the possibility to execute a roll back and change the Ci to its initial state.  " ; 
+	lss-usdl:hasGoal :ChangeCiToInitialState ;
+	
+	lss-usdl:hasStep :ExecuteRollBack ;
+	lss-usdl:hasStep :ChangeCiToInitialState ;
+	
+	lss-usdl:performedBy :ChangeAgent ;
+	
+	lss-usdl:hasLocation :Office ;
+	
+	lss-usdl:receivesResource :ChangeReport ;
+	lss-usdl:createsResource :RollBackReport ;
+
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :RollBackTime ] .
+
+
+# -----------------------------
+# Business Entities
+# -----------------------------
+
+:MeiaDoseCompany a gr:BusinessEntity ;
+	foaf:name "Meia Dose" ;
+	rdfs:comment "The company where the process happend." .
+	
+:Restaurant a gr:BusinessEntity ;
+	foaf:name "Restaurant" ;
+	rdfs:comment "Other company that participates in the business process." .
+
+
+# -----------------------------
+# Roles
+# -----------------------------
+
+:ChangeRequester a lss-usdl:Role ;
+	rdfs:label "Change Requester" ;
+	rdfs:comment "Creates a RFC report." ;
+  	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+
+:ChangeCoordinator a lss-usdl:Role ;
+	rdfs:label "Change Coordinator" ;
+	rdfs:comment "Evaluates the Changes." ;
+  	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+:CAB a lss-usdl:Role ;
+	rdfs:label "Change Advisory Board" ;
+	rdfs:comment "Delivers support to a change management team by approving requested changes and assisting in the assessment." ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+:ChangeAgent a lss-usdl:Role ;
+	rdfs:label "Change Agent" ;
+	rdfs:comment "Implements the necessary changes." ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+
+# -----------------------------
+# Goals
+# -----------------------------
+
+:Communicate a lss-usdl:Goal ;
+	rdfs:label "Communicate a request" .
+
+:AssessRisk a lss-usdl:Goal ;
+	rdfs:label "Assess risk" ;
+	rdfs:comment "Evaluate the risks to make a decision." .
+
+:SolveIssue a lss-usdl:Goal ;
+	rdfs:label "Solve issue" ;
+	rdfs:comment "Find the solution/change." .
+
+:ChangeCiToInitialState a lss-usdl:Goal ;
+	rdfs:label "Change to initial stage" ;
+	rdfs:comment "If anything went wrong we have to go back to the initial state." .
+
+# -----------------------------
+# Locations
+# -----------------------------
+:Office a lss-usdl:Loccation;
+	rdfs:label "Company's Office" .
+
+
+# -----------------------------
+# Resources
+# -----------------------------
+:ChangeData a lss-usdl:KnowledgeResource; 
+	rdfs:label "Documentation to change" .
+
+:RFCReport a dbpediar:Report;
+	rdfs:label "RFC Report" .
+
+:ChangeEvaluationReport a dbpediar:Report;
+	rdfs:label "Change Evaluation Report" .
+
+:ChangeReport a dbpediar:Report;
+	rdfs:label "Change Report" .
+
+:RollBackReport a dbpediar:Report;
+	rdfs:label "Roll Back Report" .
+# -----------------------------
+# Steps
+# -----------------------------
+:AssociateWithACi a lss-usdl:Step;
+	rdfs:label "Associate with a Ci" .
+
+:AssociateAChangeRequester a lss-usdl:Step;
+	rdfs:label "Associate a change requester" .
+
+:RFCReview a lss-usdl:Step;
+	rdfs:label "Review the RFC" .
+
+:ViewAssociatedCi a lss-usdl:Step;
+	rdfs:label "View associated Ci" .
+
+:Implement a lss-usdl:Step;
+	rdfs:label "Implement a change" .
