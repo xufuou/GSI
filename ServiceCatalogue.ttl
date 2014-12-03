@@ -1,0 +1,314 @@
+@prefix : <http://acme_services.org/itil_im_service#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix lss-usdl: <http://w3id.org/lss-usdl/v2#> .
+
+@prefix dbpedia: <http://dbpedia.org/#> .
+@prefix dbpediar: <http://dbpedia.org/resource/> .
+@prefix itsmo: <http://ontology.it/itsmo/v1#> .
+
+
+# -----------------------------
+# Service System
+# -----------------------------
+
+:CatalogueManagementService a lss-usdl:ServiceSystem ;
+  rdfs:label "ITIL Service Catalogue Management Service" ;
+  rdfs:comment "The Service Catalogue Management process is responsible to produce and maintain the information contained in the service catalogue on all services and those being prepared to be run operationally and ensure that information on agreed services are widely available to those who are approved to access it." ;
+  lss-usdl:hasGoal :DesignCatalogue ;
+
+  owl:sameAs dbpedia:Service_catalog ;
+  itsmo:hasAgreement itsmo:Agreement ;
+
+  lss-usdl:hasInteraction 
+  		:CreateServiceDescription ,
+		:DescribeServiceLevels ,
+		:GiveSupport ,
+		:DefineServiceConditions ,
+		:EstablishCost ,
+		:DefineFeaturesAndFunctions ,
+		:LinkRelatedServices .
+
+
+# ---------------------------------
+# Create Service Description
+# ---------------------------------
+
+:CreateServiceDescription a lss-usdl:Interaction ;
+	rdfs:label "Create Service Description" ; 
+	rdfs:comment "Brief description of what the service is in business language" ; 
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:hasGoal :DescribeValueProposition ;
+	lss-usdl:hasStep :IdentifyCostumer;
+	lss-usdl:hasStep :IdentifyNeeds;
+	lss-usdl:hasStep :CreateValueProposition;
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:belongsToProcess :CatalogueManagementService ;
+	lss-usdl:createsResource :ServiceDescriptionDocument ;
+
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :ServiceDefinitionTime ] .
+# ---------------------------------
+# Describe Service Levels
+# ---------------------------------
+
+:DescribeServiceLevels a lss-usdl:Interaction ;
+	rdfs:label "Describe Service Levels" ; 
+	rdfs:comment "Every service should crealy describe the agreed service levels" ; 
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:hasGoal :DefineConstraints ;
+	lss-usdl:hasStep :IdentifyCostumer;
+	lss-usdl:hasStep :CreateServiceLevels;
+	lss-usdl:hasStep :AssignDifferentTiers;
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:belongsToProcess :CatalogueManagementService ;
+	lss-usdl:createsResource :ServiceLevelDocument ;
+
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :ServiceDefinitionTime ] .
+# ---------------------------------
+# Give Support
+# ---------------------------------
+
+:GiveSupport a lss-usdl:Interaction ;
+	rdfs:label "Give Support" ; 
+	rdfs:comment "Every service should describe how the business customer should report problems or make requests." ; 
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:performedBy :TechnicalStaff ;
+	lss-usdl:hasGoal :SolveIncidents ;
+	lss-usdl:hasStep :DiagnoseProblem;
+	lss-usdl:hasStep :CheckProcedures;
+	lss-usdl:hasStep :ApplyProcedures;
+	lss-usdl:hasLocation :ServiceDesk;
+	lss-usdl:hasLocation :Restaurant;
+	lss-usdl:hasLocation :Office;
+	lss-usdl:belongsToProcess :CatalogueManagementService;
+	lss-usdl:createsResource :Report ;
+
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :SupportTime ] .
+# ---------------------------------
+# Define Service Conditions
+# ---------------------------------
+
+:DefineServiceConditions a lss-usdl:Interaction ;
+	rdfs:label "Define Service Conditions" ; 
+	rdfs:comment "This should set the expectations for any specific terms of usage and operational maintenance and change periods." ; 
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:hasGoal :SetExpectations ;
+	lss-usdl:hasStep :IdentifyServiceNeeds;
+	lss-usdl:hasStep :IdentifyServiceConditions;
+	lss-usdl:hasLocation :ServiceDesk;
+	lss-usdl:belongsToProcess :CatalogueManagementService;
+	lss-usdl:consumesResource :ServiceDescriptionDocument ;
+	lss-usdl:createsResource :ServiceDescriptionDocument ;
+
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :ServiceDefinitionTime ] .
+
+# ---------------------------------
+# Establish Cost
+# ---------------------------------
+
+:EstablishCost a lss-usdl:Interaction ;
+	rdfs:label "Establish Cost" ; 
+	rdfs:comment "Every service should establish its actual cost to the customer." ; 
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:hasGoal :EstablishROI ;
+	lss-usdl:hasStep :EstimateServiceCost;
+	lss-usdl:hasStep :EstimateServiceROI;
+	lss-usdl:hasLocation :ServiceDesk ;
+	lss-usdl:belongsToProcess :CatalogueManagementService ;
+	lss-usdl:consumesResource :ServiceDescriptionDocument ;
+	lss-usdl:createsResource :ServiceDescriptionDocument ;
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :ServiceDefinitionTime ] .
+# ---------------------------------
+# Define Features And Functions
+# ---------------------------------
+
+:DefineFeaturesAndFunctions a lss-usdl:Interaction ;
+	rdfs:label "Define Features And Functions" ; 
+	rdfs:comment "A brief description of these described in terms of the value these bring to the customer." ; 
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:hasGoal :EstablishROI ;
+	lss-usdl:hasStep :AnalyseRequisites;
+	lss-usdl:hasStep :PrioritizeRequisites;
+	lss-usdl:hasStep :TranslateToFeatures;
+	lss-usdl:hasLocation :ServiceDesk;
+	lss-usdl:belongsToProcess :CatalogueManagementService ;
+	lss-usdl:consumesResource :ServiceDescriptionDocument ;
+	lss-usdl:createsResource :ServiceDescriptionDocument ;
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :ServiceDefinitionTime ] .
+
+# ---------------------------------
+# Link Related Services
+# ---------------------------------
+
+:LinkRelatedServices a lss-usdl:Interaction ;
+	rdfs:label "Link Related Services" ; 
+	rdfs:comment "A brief description of these described in terms of the value these bring to the customer" ;
+	lss-usdl:performedBy :ServiceCatalogueManager ;
+	lss-usdl:hasGoal :Upsell ;
+	lss-usdl:hasStep :IdentifyComplementaryServices;
+	lss-usdl:hasLocation :ServiceDesk;
+	lss-usdl:belongsToProcess :CatalogueManagementService ;
+	lss-usdl:consumesResource :ServiceDescriptionDocument ;
+	lss-usdl:createsResource :ServiceDescriptionDocument ;
+	lss-usdl:hasTime
+		[ a lss-usdl:Time ;
+    		lss-usdl:hasTemporalEntity :ServiceDefinitionTime ] .
+	
+# -----------------------------
+# Business Entities
+# -----------------------------
+
+:MeiaDoseCompany a gr:BusinessEntity ;
+	foaf:name "Meia Dose" ;
+	rdfs:comment "The company where the IM process happend" .
+	
+:Restaurant a gr:BusinessEntity ;
+	foaf:name "Restaurant" ;
+	rdfs:comment "Other company that participate of the IM process" .
+
+
+# -----------------------------
+# Roles
+# -----------------------------
+:ServiceCatalogueManager a lss-usdl:Role ;
+	rdfs:label "Service Catalogue Manager" ;
+	rdfs:comment "The person who owns and designs the results of the Service Catalogue Process" ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+:TechnicalStaff a lss-usdl:Role ;
+	rdfs:label "Technical Staff" ;
+	rdfs:comment "Support Technical Staff" ;
+	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany .
+
+# -----------------------------
+# Goals
+# -----------------------------
+:DesignCatalogue a lss-usdl:Goal;
+	rdfs:label "Design the catalogue" .
+
+
+:DescribeValueProposition a lss-usdl:Goal ;
+	rdfs:label "Describe the value proposition" .
+
+
+:DefineConstraints a lss-usdl:Goal ;
+	rdfs:label "Define the constraints of the service" .
+
+
+:SolveIncidents a lss-usdl:Goal ;
+	rdfs:label "Solve incidents".
+
+
+:SetExpectations a lss-usdl:Goal ;
+	rdfs:label "Set the expectations".
+
+
+:EstablishROI a lss-usdl:Goal ;
+	rdfs:label "Establish return of the investment" .
+
+
+:Upsell a lss-usdl:Goal ;
+	rdfs:label "Sell related services" .
+
+# -----------------------------
+# Locations
+# -----------------------------
+:ServiceDesk a lss-usdl:Location;
+  rdfs:label "Service Desk Offices".
+#  lss-usdl:isLocationFrom <http://sws.geonames.org/3441575/>.
+
+:Office a lss-usdl:Location;
+  rdfs:label "Company Office".
+#  lss-usdl:isLocationFrom <http://sws.geonames.org/3441575/>.
+
+# -----------------------------
+# Steps
+# -----------------------------
+:IdentifyCostumer a lss-usdl:Step;
+	rdfs:label "Identify Costumer" .
+
+:IdentifyNeeds a lss-usdl:Step;
+	rdfs:label "Idenfity needs" .
+
+:CreateValueProposition a lss-usdl:Step;
+	rdfs:label "Create value proposition" .
+
+
+:CreateServiceLevels a lss-usdl:Step;
+	rdfs:label "Create different service levels" .
+
+:AssignDifferentTiers a lss-usdl:Step;
+	rdfs:label "Assign different tiers" .
+
+:DiagnoseProblem a lss-usdl:Step;
+	rdfs:label "Diagnose problem" .
+
+:CheckProcedures a lss-usdl:Step;
+	rdfs:label "Check predifined procedures" .
+
+:ApplyProcedures a lss-usdl:Step;
+	rdfs:label "Apply procedures" .
+
+:IdentifyServiceNeeds a lss-usdl:Step;
+	rdfs:label "Identify service needs" .
+
+:IdentifyServiceConditions a lss-usdl:Step;
+	rdfs:label "Identify service conditions" .
+
+:EstimateServiceCost a lss-usdl:Step;
+	rdfs:label "Estimante service conditions".
+
+:EstimateServiceROI a lss-usdl:Step;
+	rdfs:label "Estimate service return of investment".
+
+
+:IdentifyComplementaryServices a lss-usdl:Step;
+	rdfs:label "Identify complementary services".
+
+:AnalyseRequirements a lss-usdl:Step;
+	rdfs:label "Analyse requirements".
+	
+:PrioritizeRequirements a lss-usdl:Step;
+	rdfs:label "Prioritize requirements" .
+	
+:TranslateToFeatures a lss-usdl:Step;
+	rdfs:label "Translate requirements into features" .
+	
+
+
+# -----------------------------
+# Resources
+# -----------------------------
+
+:ServiceCatalogue a lss-usdl:KnowledgeResource;
+	rdfs:label "Service Catalogue" ;
+	rdfs:comment "It contains all the company's services" .
+
+:ServiceDescriptionDocument a lss-usdl:KnowledgeResource;
+	rdfs:label "Service Description Document" ;
+	rdfs:comment "A document which describes a service requirement" .
+
+:ServiceLevelDocument a lss-usdl:KnowledgeResource;
+	rdfs:label "Service Level Document" ;
+	rdfs:comment "A document which describes a service level" .
+
+:Report a dbpediar:Report ;
+	rdfs:label "Report" ;
+	rdfs:comment "A report about an incident related with catalogue" .
