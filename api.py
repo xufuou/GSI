@@ -222,7 +222,7 @@ class ServiceSystem:
         for row in qres:
             r=getattr(row, "tempEntity")
             i=getattr(row, "int")
-            interaction=i.split("#")[0]
+            interaction=i.split("#")[1]
             time = r.rsplit("#")[1]
             results.append([interaction,time])
 
