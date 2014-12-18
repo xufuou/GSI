@@ -565,6 +565,62 @@ class ServiceSystem:
 
         return results
 
+    def getCommentsByResource(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?resource ?c
+                WHERE {
+                  ?resource a lss-usdl:Resource ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            r,c = row;
+            resource = r.rsplit("#", 2)[1]
+            comment =  c
+            results.append([resource,comment.toPython()])
+
+        return results
+
+    def getCommentsByTime(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?time ?c
+                WHERE {
+                  ?time a lss-usdl:Time ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            t,c = row;
+            time = t.rsplit("#", 2)[1]
+            comment =  c
+            results.append([time,comment.toPython()])
+
+        return results
+
+    def getCommentsByStep(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?step ?c
+                WHERE {
+                  ?step a lss-usdl:Step ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            s,c = row;
+            step = s.rsplit("#", 2)[1]
+            comment =  c
+            results.append([step,comment.toPython()])
+
+        return results
+
+
+
     def quit(self): 
         raise SystemExit()
 
