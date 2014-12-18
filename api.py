@@ -18,7 +18,9 @@ class ServiceSystem:
     '5': ['Get Times',(lambda: ss.print_times())],
     '6': ['Get Processes',(lambda: ss.print_processes())],
     '7': ['Get Resources',(lambda: ss.print_resources())],
-    '8': ['Get Comments',(lambda: ss.print_comments())] 
+    '8': ['Get Comments',(lambda: ss.print_comments())], 
+    '9': ['Get External Knowledge',(lambda: ss.print_externalk())],
+    '10': ['Get ITIL Knowledge',(lambda: ss.print_itilk())]
     } 
 
     def __init__(self, filename):
@@ -436,6 +438,29 @@ class ServiceSystem:
             results.append([interaction, resource, dbr])
 
         return results
+
+#------------------------------------------------------------------
+#-------------- get DBpedia Resources(received) -----------------------------
+#------------------------------------------------------------------
+    def getDBPediaResourcesR(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl: <http://w3id.org/lss-usdl/v2#>
+               PREFIX dbpedia: <http://dbpedia.org/>
+                SELECT DISTINCT ?int ?res ?dbres
+                WHERE {
+                  ?lss lss-usdl:hasInteraction ?int .
+                  ?int lss-usdl:receivesResource ?res .
+                  ?res a ?dbres .
+                }""")
+
+        results = []
+        for row in qres:
+            i, r, dbr = row
+            interaction = i.rsplit("#", 2)[1]
+            resource = r.rsplit("#", 2)[1]
+            results.append([interaction, resource, dbr])
+
+        return results
 #------------------------------------------------------------------
 #-------------- get Abstract for DBpedia Resource -----------------
 #------------------------------------------------------------------
@@ -749,6 +774,20 @@ class ServiceSystem:
             print('{} - {}'.format(resource, comment))
 
 
+    def print_itilk(shelf):
+        results = ss.getDBPediaResourcesC()
+        for result in results:
+            print 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
+
+        print("")
+    
+        results = ss.getDBPediaResourcesR()
+        for result in results:
+            print 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
+
+        print("")
+
+    #def print_externalk(self):
 
 
 

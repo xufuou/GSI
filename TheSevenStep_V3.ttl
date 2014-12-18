@@ -129,7 +129,8 @@
 	lss-usdl:createsResource :ReportWhatMeasure ;
 	
 	lss-usdl:hasTime 
-		[ a lss-usdl:Time ; 
+		[ a lss-usdl:Time ;
+			rdfs:comment "The time when the report is finished."; 
 			lss-usdl:hasTemporalEntity :TimeOfReportWhatMeasure ] .      
 
 
@@ -159,6 +160,7 @@
 	
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
+			rdfs:comment "The time when the report is finished.";
 			lss-usdl:hasTemporalEntity :TimeOfReportCanMeasure ] .
 
 
@@ -194,7 +196,8 @@
 	lss-usdl:createsResource :CollectedData ;
 	
 	lss-usdl:hasTime 
-		[ a lss-usdl:Time ; 
+		[ a lss-usdl:Time ;
+			rdfs:comment "Time when the data is collected."; 
 			lss-usdl:hasTemporalEntity :TimeOfCollectedData ] . 
 
  
@@ -223,7 +226,8 @@
 	lss-usdl:createsResource :ProcessedInformation ;   
 
 	lss-usdl:hasTime 
-		[ a lss-usdl:Time ; 
+		[ a lss-usdl:Time ;
+			rdfs:comment "Time when the information is processed ."; 
 			lss-usdl:hasTemporalEntity :TimeOfProcessedInformation ] .
 
 
@@ -250,7 +254,8 @@
 	lss-usdl:createsResource :FinalReport ;  
 
 	lss-usdl:hasTime 
-		[ a lss-usdl:Time ; 
+		[ a lss-usdl:Time ;
+			rdfs:comment "Time when the final report is finished."; 
 			lss-usdl:hasTemporalEntity :TimeOfFinalReport ] .
 
 
@@ -281,7 +286,8 @@
 	lss-usdl:createsResource :Presentation ;      
 
 	lss-usdl:hasTime 
-		[ a lss-usdl:Time ; 
+		[ a lss-usdl:Time ;
+			rdfs:comment "Time when the presentation ocurred."; 
 			lss-usdl:hasTemporalEntity :TimeOfPresentation ] .
 
 
@@ -311,6 +317,7 @@
 	
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
+			rdfs:comment "Time when the improvement plan is in progress. This time can be divided into several important moments.";
 			lss-usdl:hasTemporalEntity :TimeOfImprovement ] .	
 # -----------------------------
 # Business Entities
@@ -646,36 +653,35 @@
 # Time
 # -----------------------------
 :TimeOfReportWhatMeasure a time:ProperInterval ;
-	rdfs:comment "The time when the report is finished.";
+	
 	time:intervalBefore :TimeOfReportCanMeasure .
 
 :TimeOfReportCanMeasure a time:ProperInterval ;
-	rdfs:comment "The time when the report is finished.";
+	
 	time:intervalAfter :TimeOfReportWhatMeasure ;
 	time:intervalBefore :TimeOfCollectedData .
 
 :TimeOfCollectedData a time:ProperInterval ;
-	rdfs:comment "Time when the data is collected.";
+	
 	time:intervalAfter :DefineWhatCanMeasure ;
 	time:intervalBefore :TimeOfProcessedInformation .  
 
 :TimeOfProcessedInformation a time:ProperInterval ;
-	rdfs:comment "Time when the information is processed .";
+	
 	time:intervalAfter :TimeOfCollectedData ;
 	time:intervalBefore :TimeOfFinalReport .
 
 :TimeOfFinalReport a time:ProperInterval ;
-	rdfs:comment "Time when the final report is finished.";
+	
 	time:intervalAfter :TimeOfProcessedInformation ;
 	time:intervalBefore :TimeOfPresentation .   
 
 :TimeOfPresentation a time:ProperInterval ;
-	rdfs:comment "Time when the presentation ocurred.";
+	
 	time:intervalAfter :TimeOfFinalReport ;
 	time:intervalBefore :TimeOfImprovement . 
 
 :TimeOfImprovement a time:ProperInterval ;
-	rdfs:comment "Time when the improvement plan is in progress. This time can be divided into several important moments.";
 	time:intervalAfter :TimeOfPresentation .
 
 # -----------------------------
