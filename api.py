@@ -185,23 +185,23 @@ class ServiceSystem:
     #------------------------------------------------------------------
     #-------------- Get Service Resources -----------------------------
     #------------------------------------------------------------------
-    def getResources(self):
-        qres = ServiceSystem.g.query(
-            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-                SELECT DISTINCT ?resources
-                WHERE {
-                  ?s ?prop ?o .
-                  ?lss lss-usdl:hasInteraction ?int .
-                  ?int lss-usdl:hasResource ?resources .
-                }""")
+    # def getResources(self):
+    #     qres = ServiceSystem.g.query(
+    #         """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+    #             SELECT DISTINCT ?resources
+    #             WHERE {
+    #               ?s ?prop ?o .
+    #               ?lss lss-usdl:hasInteraction ?int .
+    #               ?int lss-usdl:hasResource ?resources .
+    #             }""")
 
-        results = []
-        for row in qres:
-            r=getattr(row, "resource")
-            resource = r.rsplit("#", 2)[1]
-            results.append(resource)
+    #     results = []
+    #     for row in qres:
+    #         r=getattr(row, "resource")
+    #         resource = r.rsplit("#", 2)[1]
+    #         results.append(resource)
 
-        return results
+    #     return results
 
     #------------------------------------------------------------------
     #-------------- Get Service Times ---------------------------------
@@ -257,17 +257,32 @@ class ServiceSystem:
 #-------------- Resources received ---
 #------------------------------------------------------------------
     def getInteractionResources(self):
+
         qres = ServiceSystem.g.query(
         """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
             SELECT DISTINCT ?lss ?int ?resource
             WHERE {
               ?lss lss-usdl:hasInteraction ?int .
               ?int lss-usdl:receivesResource ?resource .
-              ?int lss-usdl:returnsResource ?resource .
             }""")
 
+        qres1 = ServiceSystem.g.query(
+        """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+            SELECT DISTINCT ?lss ?int ?resource
+            WHERE {
+              ?lss lss-usdl:hasInteraction ?int .
+              ?int lss-usdl:createsResource ?resource .
+            }""")
+      
         results = []
         for row in qres:
+            s, i, r = row
+            service = s.rsplit("#", 2)[1]
+            interaction = i.rsplit("#", 2)[1]
+            resource = r.rsplit("#", 2)[1]
+            results.append([interaction, resource])
+
+        for row in qres1:
             s, i, r = row
             service = s.rsplit("#", 2)[1]
             interaction = i.rsplit("#", 2)[1]
@@ -561,31 +576,31 @@ class ServiceSystem:
     def print_locations(self):
         results = ss.getLocations()
         for result in results:
-            print "getLocations: "  + result[0] + ' with location ' + result[1]
+            print "Location: "  + result[0] + ' with location ' + result[1]
         print("")
 
     def print_goals(self):
         results = ss.getGoals()
         for result in results:
-            print "getGoals: " + result[0] + ' with goal ' + result[1]
+            print "Goal: " + result[0] + ' with goal ' + result[1]
         print("")
 
     def print_roles(self):
         results = ss.getInterationsByRole()
         for result in results:
-            print "getRoles: " + result[0] + ' with role ' + result[1]
+            print "Role: " + result[0] + ' with role ' + result[1]
         print("")
 
     def print_times(self):
         results = ss.getTimes()
         for result in results:
-            print 'getInterationsByTime: ' + result[0] + ' with time ' + result[1]
+            print 'Time: ' + result[0] + ' with time ' + result[1]
         print("")
 
     def print_resources(self):
-        results = ss.getResources()
-        for resource in results:
-            print "getResources: " + resource
+        results = ss.getInteractionResources()
+        for result in results:
+            print 'Resource: ' + result[0] + ' with resource ' + result[1]
         print("")
 
     def print_processes(self):
