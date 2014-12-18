@@ -173,11 +173,12 @@ class ServiceSystem:
 
         results = []
         for row in qres:
+            
             i=getattr(row,"int")
             r=getattr(row, "location")
             interaction=i.rsplit("#", 2)[1]
             location = r.rsplit("#", 2)[1]
-            results.append(location)
+            results.append([interaction,location])
 
         return results
 
@@ -221,7 +222,7 @@ class ServiceSystem:
         for row in qres:
             r=getattr(row, "tempEntity")
             i=getattr(row, "int")
-            interaction=i.split("#")[1]
+            interaction=i.split("#")[0]
             time = r.rsplit("#")[1]
             results.append([interaction,time])
 
@@ -570,9 +571,9 @@ class ServiceSystem:
         print("")
 
     def print_roles(self):
-        results = ss.getRoles()
-        for role in results:
-            print "getRoles: " + role
+        results = ss.getInterationsByRole()
+        for result in results:
+            print "getRoles: " + result[0] + ' with role ' + result[1]
         print("")
 
     def print_times(self):
