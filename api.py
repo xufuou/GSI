@@ -662,6 +662,21 @@ class ServiceSystem:
         for goal,comment in ss.getCommentsByGoal():
             print('{} - {}'.format(goal, comment))
 
+        print " "
+        print "- How"
+        for step,comment in ss.getCommentsByStep():
+            print('{} - {}'.format(step, comment))
+
+        print " "
+        print "- When"
+        for time,comment in ss.getCommentsByTime():
+            print('{} - {}'.format(time, comment))
+
+        print " "
+        print "- What"
+        for resource,comment in ss.getCommentsByResource():
+            print('{} - {}'.format(resource, comment))
+
 
 
 
