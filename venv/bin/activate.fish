@@ -32,7 +32,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/xufuou/Desktop/meta2_GSI/venv"
+set -gx VIRTUAL_ENV "/Users/xufuou/Dropbox/gsi/meta2_GSI/final/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

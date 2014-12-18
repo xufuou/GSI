@@ -260,3 +260,5 @@
 
 :DocumentCustomerSatisfaction a lss-usdl:Step ;
 	rdfs:label "Document customer satisfaction".
+
+

@@ -356,9 +356,9 @@ class ServiceSystem:
 
 
 #------------------------------------------------------------------
-#-------------- get DBpedia Resources -----------------------------
+#-------------- get DBpedia Resources(created) -----------------------------
 #------------------------------------------------------------------
-    def getDBPediaResources(self):
+    def getDBPediaResourcesC(self):
         qres = ServiceSystem.g.query(
             """PREFIX  lss-usdl: <http://w3id.org/lss-usdl/v2#>
                PREFIX dbpedia: <http://dbpedia.org/>
@@ -378,6 +378,28 @@ class ServiceSystem:
 
         return results
 
+#------------------------------------------------------------------
+#-------------- get DBpedia Resources(received) -----------------------------
+#------------------------------------------------------------------
+    def getDBPediaResourcesR(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl: <http://w3id.org/lss-usdl/v2#>
+               PREFIX dbpedia: <http://dbpedia.org/>
+                SELECT DISTINCT ?int ?res ?dbres
+                WHERE {
+                  ?lss lss-usdl:hasInteraction ?int .
+                  ?int lss-usdl:receivesResource ?res .
+                  ?res a ?dbres .
+                }""")
+
+        results = []
+        for row in qres:
+            i, r, dbr = row
+            interaction = i.rsplit("#", 2)[1]
+            resource = r.rsplit("#", 2)[1]
+            results.append([interaction, resource, dbr])
+
+        return results
 #------------------------------------------------------------------
 #-------------- get Abstract for DBpedia Resource -----------------
 #------------------------------------------------------------------
@@ -502,7 +524,7 @@ if __name__ == "__main__":
     ss = ServiceSystem("file:" + inputfile)
     results = ss.getServiceInformation()
     print "Service System name: " + results[0].rsplit("#", 2)[1]
-    print "Service System desc: " + results[1]
+    print "Service System description:\n" + results[1]
     print("")
 
 
@@ -582,13 +604,13 @@ if __name__ == "__main__":
 
     results = ss.getInteractionResourcesReceived()
     for result in results:
-        str = 'getInteractionResourcesReceived: ' + result[0] + ' with resource ' + result[1]
+        str = 'getInteractionResourcesReceived: ' + result[0] + ' receives resource ' + result[1]
         print str
     print("")
 
     results = ss.getInteractionResourcesCreated()
     for result in results:
-        str = 'getInteractionResourcesCreated: ' + result[0] + ' with resource ' + result[1]
+        str = 'getInteractionResourcesCreated: ' + result[0] + ' creates resource ' + result[1]
         print str
     print("")
 
@@ -604,13 +626,28 @@ if __name__ == "__main__":
         print str
         print("")
 
-    results = ss.getDBPediaResources()
+    results = ss.getDBPediaResourcesC()
     for result in results:
         str = 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
         print str
     print("")
+    
+    results = ss.getDBPediaResourcesR()
+    for result in results:
+        str = 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
+        print str
+    print("")
+    
+    results = ss.getDBPediaResourcesC()
+    for result in results:
+        dbpediaAbstracts = ss.getDBPediaAbstract(result[2])
+        for dbpediaAbstract in dbpediaAbstracts:
+            str = 'getDBPediaAbstract: ' + result[2] + ': ' +  dbpediaAbstract
+            print str
+            print("")
+    print("")
 
-    results = ss.getDBPediaResources()
+    results = ss.getDBPediaResourcesR()
     for result in results:
         dbpediaAbstracts = ss.getDBPediaAbstract(result[2])
         for dbpediaAbstract in dbpediaAbstracts:

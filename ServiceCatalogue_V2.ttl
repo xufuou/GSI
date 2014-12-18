@@ -312,3 +312,6 @@
 :Report a dbpediar:Report ;
 	rdfs:label "Report" ;
 	rdfs:comment "A report about an incident related with catalogue" .
+
+
+

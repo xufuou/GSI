@@ -8,11 +8,18 @@
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix lss-usdl: <http://w3id.org/lss-usdl/v2#> .
 
+@prefix itilglos: <http://eden.dei.uc.pt/~jcardoso/rdf/itil/glossary.ttl#> .
+@prefix itilproc: <http://eden.dei.uc.pt/~jcardoso/rdf/itil/processes.ttl#> .
+@prefix itilrole: <http://eden.dei.uc.pt/~jcardoso/rdf/itil/roles.ttl#> .
+
 @prefix dbpedia: <http://dbpedia.org/#> .
 @prefix dbpediar: <http://dbpedia.org/resource/> .
+#@prefix freebase: <https://www.freebase.com/m/> .
 @prefix itsmo: <http://ontology.it/itsmo/v1#> .
 
 
+:dc:creator :xufuou,
+			:fbatista.
 # -----------------------------
 # Service System
 # -----------------------------
@@ -32,7 +39,65 @@
   		:ProcessData ,
   		:AnalyseData ,
   		:PresesentInformation ,
-  		:ImplementImprovements.
+  		:ImplementImprovements;
+
+  lss-usdl:hasControlFlow
+   	 	:ControlFlow_ToM_CanM,
+		:ControlFlow_CanM_Gat ,
+		:ControlFlow_Gat_Pro ,
+		:ControlFlow_Pro_Anal ,
+		:ControlFlow_Anal_Pres ,
+		:ControlFlow_Pres_Imp ,
+		:ControlFlow_Imp_ToM.
+
+# -----------------------------
+# Flow of interactions
+# -----------------------------
+
+:ControlFlow_ToM_CanM a lss-usdl:ControlFlow ;
+	rdfs:label "What to measure to what can measure" ;
+	lss-usdl:hasSource :DefineWhatToMeasure ;
+	lss-usdl:hasTarget :DefineWhatCanMeasure ;
+	lss-usdl:hasCondition "true"@en .
+
+:ControlFlow_CanM_Gat a lss-usdl:ControlFlow ;
+	rdfs:label "What can measure to gather data" ;
+	lss-usdl:hasSource :DefineWhatCanMeasure ;
+	lss-usdl:hasTarget :GatherData ;
+	lss-usdl:hasCondition "true"@en .
+
+
+:ControlFlow_Gat_Pro a lss-usdl:ControlFlow ;
+	rdfs:label "Gather data to process data" ;
+	lss-usdl:hasSource :GatherData ;
+	lss-usdl:hasTarget :ProcessData ;
+	lss-usdl:hasCondition "true"@en .
+
+:ControlFlow_Pro_Anal a lss-usdl:ControlFlow ;
+	rdfs:label "Process data to analyse information" ;
+	lss-usdl:hasSource :ProcessData ;
+	lss-usdl:hasTarget :AnalyseData ;
+	lss-usdl:hasCondition "true"@en .
+
+
+:ControlFlow_Anal_Pres a lss-usdl:ControlFlow ;
+	rdfs:label "Analyse information to present information" ;
+	lss-usdl:hasSource :AnalyseData ;
+	lss-usdl:hasTarget :PresesentInformation ;
+	lss-usdl:hasCondition "true"@en .
+
+:ControlFlow_Pres_Imp a lss-usdl:ControlFlow ;
+	rdfs:label "Present information to implement improvemets" ;
+	lss-usdl:hasSource :PresesentInformation ;
+	lss-usdl:hasTarget :ImplementImprovements ;
+	lss-usdl:hasCondition "true"@en .
+
+:ControlFlow_Imp_ToM a lss-usdl:ControlFlow ;
+	rdfs:label "Renew the cycle" ;
+	lss-usdl:hasSource :ImplementImprovements ;
+	lss-usdl:hasTarget :DefineWhatToMeasure ;
+	lss-usdl:hasCondition "true"@en .
+
 
 
 # ---------------------------------
@@ -47,21 +112,23 @@
 	lss-usdl:hasStep :DefineSourcesInformation ;
 	lss-usdl:hasStep :MapActivities ;
 	lss-usdl:hasStep :CreateReportWhatMeasure ;
-
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService;
 
 	lss-usdl:performedBy :ServiceContinualImprovementManager ; 
 	
 	lss-usdl:hasLocation :Office; 
 	
+	lss-usdl:receivesResource :CSFs;
+	lss-usdl:receivesResource :KPIs;
 	lss-usdl:receivesResource :ServiceLevelRequirements ; 
-	lss-usdl:receivesResource :ServiceCatalogue ; 
+	lss-usdl:receivesResource :ServiceCatalogue; 
 	lss-usdl:receivesResource :DocumentedCompanyVision ; 
 	lss-usdl:receivesResource :DocumentedDepartmentsObjectives ; 
 	lss-usdl:createsResource :ReportWhatMeasure ;
 	
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
-			lss-usdl:hasTemporalEntity :TimeofReportWhatMeasure ] .      
+			lss-usdl:hasTemporalEntity :TimeOfReportWhatMeasure ] .      
 
 
 # ---------------------------------
@@ -77,7 +144,7 @@
 	lss-usdl:hasStep :PerfomGapAnalysis ;
 	lss-usdl:hasStep :IdentifyOpportunities ;
 	lss-usdl:hasStep :CreateReportCanMeasure ;
-	
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService;
 	lss-usdl:performedBy :ServiceContinualImprovementManager ;
 	
 	lss-usdl:hasLocation :Office;
@@ -90,7 +157,10 @@
 	
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
-			lss-usdl:hasTemporalEntity :TimeOfReportCanMeasure ] .      
+			lss-usdl:hasTemporalEntity :TimeOfReportCanMeasure ] .
+
+
+
 
 # ---------------------------------
 # Gathering the data
@@ -108,7 +178,7 @@
 	lss-usdl:hasStep :GiveFormation ;
 	lss-usdl:hasStep :StartMonitoring ;
 	lss-usdl:hasStep :CollectData ;
-
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService;
 
 	lss-usdl:performedBy :ServiceContinualImprovementManager ;
 	lss-usdl:performedBy :CompanyStaff ;
@@ -123,7 +193,9 @@
 	
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
-			lss-usdl:hasTemporalEntity :TimeOfCollectedData ] .      
+			lss-usdl:hasTemporalEntity :TimeOfCollectedData ] . 
+
+ 
 
 # ---------------------------------
 # Processing the data
@@ -138,7 +210,7 @@
 	lss-usdl:hasStep :DefineProcessingProcedures ;
 	lss-usdl:hasStep :StartProcessing ;
 	lss-usdl:hasStep :EvaluateProcessedData ;
-
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService;
 	lss-usdl:performedBy :ServiceContinualImprovementManager ;
 	lss-usdl:performedBy :Analyst ;
 	
@@ -150,8 +222,7 @@
 
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
-			lss-usdl:hasTemporalEntity :TimeOfProcessedInformation ] .   
-
+			lss-usdl:hasTemporalEntity :TimeOfProcessedInformation ] .
 
 
 # ---------------------------------
@@ -167,7 +238,7 @@
 	lss-usdl:hasStep :AskQuestions ;
 	lss-usdl:hasStep :FindAnswers ;
 	lss-usdl:hasStep :CreateFinalReport ;
-
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService;
 	lss-usdl:performedBy :ServiceContinualImprovementManager ;
 	lss-usdl:performedBy :Analyst ;
 	
@@ -178,12 +249,13 @@
 
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
-			lss-usdl:hasTemporalEntity :TimeOfFinalReport ] .   
-   
+			lss-usdl:hasTemporalEntity :TimeOfFinalReport ] .
 
-# ---------------------------------
+
+
+# ------------------------------------
 # Presenting and using the information
-# ---------------------------------
+# ------------------------------------
 
 :PresentInformation a lss-usdl:Interaction ;
 	rdfs:label "Presenting and using the information" ; 
@@ -195,7 +267,7 @@
 	lss-usdl:hasStep :DefinePresentationPlan ;
 	lss-usdl:hasStep :CreatePresentation ;
 	lss-usdl:hasStep :GivePresentation ;
-	
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService; 
 	lss-usdl:performedBy :ServiceContinualImprovementManager;
 
 	lss-usdl:hasLocation :Office;
@@ -203,11 +275,14 @@
 
 	lss-usdl:receivesResource :FinalReport ;
 	lss-usdl:receivesResource :AudienceInformation ; 
+	lss-usdl:consumesResource :Presentation ;
 	lss-usdl:createsResource :Presentation ;      
 
 	lss-usdl:hasTime 
 		[ a lss-usdl:Time ; 
-			lss-usdl:hasTemporalEntity :TimeOfFinalReport ] .   
+			lss-usdl:hasTemporalEntity :TimeOfPresentation ] .
+
+
 
 # ---------------------------------
 # Implementing corrective action
@@ -222,7 +297,7 @@
 	lss-usdl:hasStep :CreateSolutions ;
 	lss-usdl:hasStep :CreatePlan ;
 	lss-usdl:hasStep :CommunicateOrganization;
-
+	lss-usdl:belongsToProcess :TheSevenStepImprovementService;
 
 	lss-usdl:performedBy :SeniorManager;
 	lss-usdl:performedBy :ServiceContinualImprovementManager ;
@@ -230,9 +305,11 @@
 	lss-usdl:hasLocation :MeiaDoseHeadquarters;
 	
 	lss-usdl:receivesResource :FinalReport ; 
-	lss-usdl:consumesResource :Presentation ;
-	lss-usdl:createsResource :ImprovementPlan .  
-
+	lss-usdl:createsResource :SIP ;  
+	
+	lss-usdl:hasTime 
+		[ a lss-usdl:Time ; 
+			lss-usdl:hasTemporalEntity :TimeOfImprovement ] .	
 # -----------------------------
 # Business Entities
 # -----------------------------
@@ -252,7 +329,28 @@
 :ServiceContinualImprovementManager a lss-usdl:Role;
 	rdfs:label "Service Continual Improvement Manager" ;
 	rdfs:comment "Although everybody within the organization has a role to play in continual improvement. The key role that is essential to the effective implementation of this process is the CSI Manager. " ;
+	owl:sameAs itilrole:CSI_Manager;
+	
+	:haEducation :MSInformatics,
+				:ITILExpert,
+				:BlackBeltLeanSigma;
+	
+	:hasResponsability :DevelopCSI,
+					:ComunicateCSI,
+					:CooperateWitServiceOwners,
+					:EstablishSIPs,
+					:EnsureCoordination;
+	
+	:hasSkill :TeamManagement,
+			:WrittingSkills,
+			:GoodCommunication,
+			:AnalyticalSkills;
+
   	lss-usdl:belongsToBusinessEntity :MeiaDoseCompany.
+
+:ServiceContinualImprovementManager a itilglos:Service_Owner;
+	rdfs:label "Service Continual Improvement Manager"; 
+	rdfs:comment "Owner of CSI".
 
 :SeniorManager a lss-usdl:Role;
 	rdfs:label "Senior Manager" ;
@@ -303,7 +401,7 @@
 	rdfs:comment "Present the acquire knowledge to a specific audience." .
 
 
-:ImplementImprovement
+:ImplementImprovement;
 	rdfs:label "Implement improvements";
 	rdfs:comment "Use the gained knowledge to improve the company." .
 
@@ -322,14 +420,23 @@
 # -----------------------------
 # Resources
 # -----------------------------
+:CSFs a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Critical Success Factor";
+	owl:sameAs itilglos:Critical_Success_Factor.
+
+:KPIs a lss-usdl:KnowledgeResource ; 
+	rdfs:label "Key Performance Indicator" ;
+	owl:sameAs itilglos:Key_Performance_Indicator.
 
 :ServiceLevelRequirements a lss-usdl:KnowledgeResource ; 
 	rdfs:label "Service Description Document" ;
-	rdfs:comment "A document which describes a service requirement" .
+	rdfs:comment "A document which describes a service requirement" ;
+	owl:sameAs itilglos:Service_Level_Requirement.
 
-:ServiceCatalogue a lss-usdl:KnowledgeResource;
+:ServiceCatalogue a dbpediar:Service_catalog ;
 	rdfs:label "Service Catalogue" ;
-	rdfs:comment "It contains all the company's services" . 
+	rdfs:comment "It contains all the company's services";
+	owl:sameAs itilglos:Service_Catalogue. 
 
 :DocumentedCompanyVision a lss-usdl:KnowledgeResource ; 
 	rdfs:label "Company's vision and mission" ;
@@ -339,7 +446,7 @@
 	rdfs:label "Each department's goals" ;
 	rdfs:comment "It contains each departments objectives." . 
 
-:ReportWhatMeasure a dbpediar:Report ;
+:ReportWhatMeasure a lss-usdl:KnowledgeResource ;
 	rdfs:label "What to measure report" ;
 	rdfs:comment "A report with what we should measure." .
 
@@ -356,7 +463,7 @@
 	rdfs:comment "Manual instruction of available tools." .
 
 
-:ReportCanMeasure a dbpediar:Report ;
+:ReportCanMeasure a lss-usdl:KnowledgeResource ;
 	rdfs:label "What can measure report" ;
 	rdfs:comment "A report with what we can measure." .
 
@@ -366,7 +473,8 @@
 
 :CollectedData a lss-usdl:KnowledgeResource ;
 	rdfs:label "Collected data" ;
-	rdfs:comment "Data collected from all the company." .
+	rdfs:comment "Data collected from all the company."; 
+	owl:sameAs itilglos:Service_Reporting.
 
 
 :ProcessingPlan a lss-usdl:KnowledgeResource;
@@ -389,9 +497,10 @@
 	rdfs:label "Presentation" ;
 	rdfs:comment "The presentation (in any format) to show the stakeholders." .  
 
-:ImprovementPlan a lss-usdl:KnowledgeResource; 
+:SIP a lss-usdl:KnowledgeResource;
 	rdfs:label "Improvement plan" ;
-	rdfs:comment "Documentation with the changes to made in the company and how to do it." .
+	rdfs:comment "Documentation with the changes to made in the company and how to do it.";
+	owl:sameAs itilglos:Service_Improvement_Plan .
 
 # -----------------------------
 # Steps
@@ -415,7 +524,8 @@
 
 :PerfomGapAnalysis a lss-usdl:Step ;
 	rdfs:label "Perfom a gap analysis";
-	rdfs:comment "Analyse the services and its needs.".
+	rdfs:comment "Analyse the services and its needs.";
+	owl:sameAs itilglos:Gap_Analysis.
 
 :IdentifyOpportunities a lss-usdl:Step ;
 	rdfs:label "Identify opportunities";
@@ -512,7 +622,7 @@
 	rdfs:label "Create solution".
 
 :CreatePlan a lss-usdl:Step ;
-	rdfs:label "Create a improvement plan".
+	rdfs:label "Create a service improvement plan".
 
 :CommunicateOrganization a lss-usdl:Step;
 	rdfs:label "Communicate to organization";
@@ -525,8 +635,69 @@
 :TheSevenStepImprovementService a lss-usdl:Process ;
 	rdfs:label "The Seven Step Improvement Service" .
 
+#:TheSevenStepImprovementService a itilglos:Qualitycycle_DEMING ;
+	#rdfs:label "The Seven Step Improvement";
+	#rdfs:comment "The Seven Step Improvement Service is a Plan-Do-Check-Act cycle";
+	#owl:sameAs itilglos:Plan-Do-Check-Act.
+
 # -----------------------------
 # Time
 # -----------------------------
+:TimeOfReportWhatMeasure a time:ProperInterval ;
+	time:intervalBefore :TimeOfReportCanMeasure .
 
+:TimeOfReportCanMeasure a time:ProperInterval ;
+	time:intervalAfter :TimeOfReportWhatMeasure ;
+	time:intervalBefore :TimeOfCollectedData .
 
+:TimeOfCollectedData a time:ProperInterval ;
+	time:intervalAfter :DefineWhatCanMeasure ;
+	time:intervalBefore :TimeOfProcessedInformation .  
+
+:TimeOfProcessedInformation a time:ProperInterval ;
+	time:intervalAfter :TimeOfCollectedData ;
+	time:intervalBefore :TimeOfFinalReport .
+
+:TimeOfFinalReport a time:ProperInterval ;
+	time:intervalAfter :TimeOfProcessedInformation ;
+	time:intervalBefore :TimeOfPresentation .   
+
+:TimeOfPresentation a time:ProperInterval ;
+	time:intervalAfter :TimeOfFinalReport ;
+	time:intervalBefore :TimeOfImprovement . 
+
+:TimeOfImprovement a time:ProperInterval ;
+	time:intervalAfter :TimeOfPresentation .
+
+# -----------------------------
+# Created Knowledge
+# -----------------------------
+:hasEducation a rdf:Property;
+	rdfs:label "Has Education";
+	rdfs:comment "Necessary education to perform the role.";
+	rdfs:domain lss-usdl:Roles;
+	rdfs:range xsd:string.
+
+:hasSkill a rdf:Property;
+	rdfs:label "Has Skill";
+	rdfs:comment "Necessary skill to perform the role.";
+	rdfs:domain lss-usdl:Roles;
+	rdfs:range xsd:string.
+
+:hasResponsability a rdf:Property;
+	rdfs:label "Has Responsability";
+	rdfs:comment "Responsability of the role.";
+	rdfs:domain lss-usdl:Roles;
+	rdfs:range xsd:string.
+
+# -----------------------------
+# Authors
+# -----------------------------
+
+:xufuou a foaf:Person ;
+    foaf:Organization "Universidade de Coimbra";
+    foaf:name "Xu Fu Ou".
+
+:fbatista a foaf:Person ;
+    foaf:Organization "Universidade de Coimbra";
+    foaf:name "Filipe Batista" .
