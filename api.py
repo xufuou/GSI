@@ -17,7 +17,8 @@ class ServiceSystem:
     '4': ['Get Roles',(lambda: ss.print_roles())],
     '5': ['Get Times',(lambda: ss.print_times())],
     '6': ['Get Processes',(lambda: ss.print_processes())],
-    '7': ['Get Resources',(lambda: ss.print_resources())]          
+    '7': ['Get Resources',(lambda: ss.print_resources())],
+    '8': ['Get Comments',(lambda: ss.print_comments())] 
     } 
 
     def __init__(self, filename):
@@ -509,11 +510,31 @@ class ServiceSystem:
 
         return results
 
-    def getComments(self):
+    def getComments_old(self):
         qres = ServiceSystem.g.query(
         """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
             SELECT ?c WHERE{?int rdfs:comment ?c }
             """)
+
+        return qres
+
+    def getComments(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?int ?role ?c
+                WHERE {
+                  ?role a lss-usdl:Role .
+                  ?int rdfs:comment ?c .
+                }""")
+
+        results = []
+        # for row in qres:
+            
+        #     r=getattr(row, "role")
+        #     i=getattr(row, "int")
+        #     interaction=i.rsplit("#", 2)[1]
+        #     role = r.rsplit("#", 2)[1]
+        #     results.append([interaction,role])
 
         return qres
 
@@ -594,6 +615,12 @@ class ServiceSystem:
             for step in service[1]:
                 print "Step: " + step
             print("")
+
+    def print_comments(self):
+        results = ss.getComments()
+        for comment in results:
+            print comment
+
 
 
 
