@@ -7,6 +7,7 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix lss-usdl: <http://w3id.org/lss-usdl/v2#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
 
 @prefix itilglos: <http://eden.dei.uc.pt/~jcardoso/rdf/itil/glossary.ttl#> .
 @prefix itilproc: <http://eden.dei.uc.pt/~jcardoso/rdf/itil/processes.ttl#> .
@@ -17,9 +18,10 @@
 #@prefix freebase: <https://www.freebase.com/m/> .
 @prefix itsmo: <http://ontology.it/itsmo/v1#> .
 
-
-:dc:creator :xufuou,
-			:fbatista.
+<http://w3id.org/lss-usdl/v2> a owl:Ontology;
+    dc:title "The Seven Step Improvement Process";
+	dc:creator :xufuou;
+	dc:creator :fbatista.
 # -----------------------------
 # Service System
 # -----------------------------
@@ -289,9 +291,9 @@
 # ---------------------------------
 
 :ImplementImprovements a lss-usdl:Interaction ;
-	rdfs:label "Implement corrective actions" ; 
+	rdfs:label "Implement improvements" ; 
 	rdfs:comment "The knowledge gained is used to optimise, improve and correct services. Managers identify issues and present solutions. The corrective actions that need to be taken to improve the service are communicated and explained to the organisation. Following this step the organisation establishes a new baseline and the cycle begins anew. " ;
-	lss-usdl:hasGoal :ImplementImprovement ;
+	lss-usdl:hasGoal :ImplementCorrectiveAction ;
 	lss-usdl:hasStep :GainKnowledge ;
 	lss-usdl:hasStep :IdentifyIssues;
 	lss-usdl:hasStep :CreateSolutions ;
@@ -401,8 +403,8 @@
 	rdfs:comment "Present the acquire knowledge to a specific audience." .
 
 
-:ImplementImprovement;
-	rdfs:label "Implement improvements";
+:ImplementCorrectiveAction a lss-usdl:Goal;
+	rdfs:label "Implement Corrective Action";
 	rdfs:comment "Use the gained knowledge to improve the company." .
 
 
@@ -674,25 +676,77 @@
 # -----------------------------
 :hasEducation a rdf:Property;
 	rdfs:label "Has Education";
-	rdfs:comment "Necessary education to perform the role.";
+	rdfs:comment "Necessary education to perform a role.";
 	rdfs:domain lss-usdl:Roles;
 	rdfs:range xsd:string.
 
 :hasSkill a rdf:Property;
 	rdfs:label "Has Skill";
-	rdfs:comment "Necessary skill to perform the role.";
+	rdfs:comment "Necessary skill to perform a role.";
 	rdfs:domain lss-usdl:Roles;
 	rdfs:range xsd:string.
 
 :hasResponsability a rdf:Property;
 	rdfs:label "Has Responsability";
-	rdfs:comment "Responsability of the role.";
+	rdfs:comment "Responsability of a role.";
 	rdfs:domain lss-usdl:Roles;
 	rdfs:range xsd:string.
+
+:Skill a rdfs:Class, owl:Class;
+    rdfs:subClassOf lss-usdl:Role;
+    rdfs:label "Skill";
+    rdfs:comment "Necessary skill to perform a role.".
+
+:Education a rdfs:Class, owl:Class;
+    rdfs:subClassOf lss-usdl:Role;
+    rdfs:label "Education";
+    rdfs:comment "Necessary education to perform a role.".
+
+:Responsability a rdfs:Class, owl:Class;
+    rdfs:subClassOf lss-usdl:Role;
+    rdfs:label "Responsability";
+    rdfs:comment "Responsability of a role.".
+
+:MSInformatics a :Education;
+	rdfs:label "Masters Degree in Informatics".
+
+:ITILExpert a :Education;
+	rdfs:label "ITL Expert Certificate".
+
+:BlackBeltLeanSigma a :Education;
+	rdfs:label "Six Sigma Certificate".
+	
+:DevelopCSI a :Responsability;
+	rdfs:label "Develop CSI plan".
+
+:ComunicateCSI a :Responsability;
+	rdfs:label "Comunicate CSI to organization".
+
+:CooperateWitServiceOwners a :Responsability;
+	rdfs:label "Cooperate with service owners".
+
+:EstablishSIPs a :Responsability;
+	rdfs:label "Six Sigma Certificate".
+
+:EnsureCoordination a :Responsability;
+	rdfs:label "Six Sigma Certificate".
+	
+:TeamManagement a :Skill;
+	rdfs:label "Team management".
+
+:WrittingSkills a :Skill;
+	rdfs:label "Writting skills".
+
+:GoodCommunication a :Skill;
+	rdfs:label "Good comunication".
+
+:AnalyticalSkills a :Skill;
+	rdfs:label "Analytical skills".
 
 # -----------------------------
 # Authors
 # -----------------------------
+
 
 :xufuou a foaf:Person ;
     foaf:Organization "Universidade de Coimbra";
