@@ -2,7 +2,6 @@ from rdflib import Graph, RDF, URIRef,  RDFS #, Literal, BNode
 from SPARQLWrapper import SPARQLWrapper, JSON
 import sys, getopt
 
-
 class ServiceSystem:
     'A API to a Service Systems'
     filename = ''
