@@ -100,23 +100,26 @@ class ServiceSystem:
     #------------------------------------------------------------------
     #-------------- Get Service Roles ---------------------------------
     #------------------------------------------------------------------
-    def getRoles(self):
-        qres = ServiceSystem.g.query(
-            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-                SELECT DISTINCT ?role
-                WHERE {
-                  ?s ?prop ?o .
-                  ?lss lss-usdl:hasInteraction ?int .
-                  ?int lss-usdl:performedBy ?role .
-                }""")
+    # def getRoles(self):
+    #     qres = ServiceSystem.g.query(
+    #         """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+    #             SELECT DISTINCT ?int ?role
+    #             WHERE {
+    #               ?s ?prop ?o .
+    #               ?lss lss-usdl:hasInteraction ?int .
+    #               ?int lss-usdl:performedBy ?role .
+    #             }""")
 
-        results = []
-        for row in qres:
-            r=getattr(row, "role")
-            role = r.rsplit("#", 2)[1]
-            results.append(role)
+    #     results = []
+    #     for row in qres:
+            
+    #         r=getattr(row, "role")
+    #         i=getattr(row, "int")
+    #         interaction=i.rsplit("#", 2)[1]
+    #         role = r.rsplit("#", 2)[1]
+    #         results.append([interaction,role])
 
-        return results
+    #     return results
 
 
         
@@ -126,7 +129,7 @@ class ServiceSystem:
     def getGoals(self):
         qres = ServiceSystem.g.query(
             """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-                SELECT DISTINCT ?goal
+                SELECT DISTINCT ?int ?goal
                 WHERE {
                   ?s ?prop ?o .
                   ?lss lss-usdl:hasInteraction ?int .
@@ -136,8 +139,10 @@ class ServiceSystem:
         results = []
         for row in qres:
             r=getattr(row, "goal")
+            i=getattr(row, "int")
+            interaction=i.rsplit("#", 2)[1]
             goal = r.rsplit("#", 2)[1]
-            results.append(goal)
+            results.append([interaction,goal])
 
         return results
 
@@ -147,7 +152,7 @@ class ServiceSystem:
     def getLocations(self):
         qres = ServiceSystem.g.query(
             """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-                SELECT DISTINCT ?location
+                SELECT DISTINCT ?int ?location
                 WHERE {
                   ?s ?prop ?o .
                   ?lss lss-usdl:hasInteraction ?int .
@@ -156,7 +161,9 @@ class ServiceSystem:
 
         results = []
         for row in qres:
+            i=getattr(row,"int")
             r=getattr(row, "location")
+            interaction=i.rsplit("#", 2)[1]
             location = r.rsplit("#", 2)[1]
             results.append(location)
 
@@ -183,8 +190,6 @@ class ServiceSystem:
 
         return results
 
-
-
     #------------------------------------------------------------------
     #-------------- Get Service Times ---------------------------------
     #------------------------------------------------------------------
@@ -200,10 +205,13 @@ class ServiceSystem:
                 }""")
 
         results = []
+        
         for row in qres:
             r=getattr(row, "tempEntity")
+            i=getattr(row, "int")
+            interaction=i.split("#")[1]
             time = r.rsplit("#")[1]
-            results.append(time)
+            results.append([interaction,time])
 
         return results
 
@@ -270,7 +278,7 @@ class ServiceSystem:
         results = []
         for row in qres:
             s, i, r = row
-            service = s.rsplit("#", 2)[1]
+            #service = s.rsplit("#", 2)[1]
             interaction = i.rsplit("#", 2)[1]
             resource = r.rsplit("#", 2)[1]
             results.append([interaction, resource])
@@ -424,6 +432,8 @@ class ServiceSystem:
             results.append(str)
 
         return results
+
+
 #------------------------------------------------------------------
 #-------------------- Get Interaction Steps -----------------------
 #------------------------------------------------------------------
@@ -529,6 +539,7 @@ if __name__ == "__main__":
 
     results = ss.getGatewaysAndTypes("XOR")
     for gateway,tipo in results:
+
         print "Gateway: " + gateway + " -> " + tipo 
     print("")
 
@@ -555,19 +566,23 @@ if __name__ == "__main__":
         print str
     print("")
 
-    results = ss.getRoles()
-    for role in results:
-        print "getRoles: " + role
-    print("")
+    # results = ss.getRoles()
+    # for role in results:
+    #     print "getRoles: " + role
+    # print("")
 
     results = ss.getGoals()
-    for goal in results:
-        print "getGoals: " + goal
+    for result in results:
+        print "getGoals: " + result[0] + ' with goal ' + result[1]
     print("")
 
     results = ss.getLocations()
+
+
+    print "--- Locations: ---"
     for location in results:
-        print "getLocations: " + location
+
+    print "getLocations:"  + result[0] + ' with location ' + result[1]
     print("")
 
     results = ss.getResources()
@@ -576,8 +591,10 @@ if __name__ == "__main__":
     print("")
 
     results = ss.getTimes()
-    for time in results:
-        print "getTimes: " + time
+    
+    for result in results:
+    	str = 'getInterationsByTime: ' + result[0] + ' with time ' + result[1]
+        print str
     print("")
 
 
