@@ -17,7 +17,8 @@ class ServiceSystem:
     '4': ['Get Roles',(lambda: ss.print_roles())],
     '5': ['Get Times',(lambda: ss.print_times())],
     '6': ['Get Processes',(lambda: ss.print_processes())],
-    '7': ['Get Resources',(lambda: ss.print_resources())]          
+    '7': ['Get Resources',(lambda: ss.print_resources())],
+    '8': ['Get Comments',(lambda: ss.print_comments())] 
     } 
 
     def __init__(self, filename):
@@ -525,13 +526,115 @@ class ServiceSystem:
 
         return results
 
-    def getComments(self):
-        qres = ServiceSystem.g.query(
-        """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-            SELECT ?c WHERE{?int rdfs:comment ?c }
-            """)
 
-        return qres
+    def getCommentsByRole(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?role ?c
+                WHERE {
+                  ?role a lss-usdl:Role ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            r,c = row;
+            role = r.rsplit("#", 2)[1]
+            comment =  c
+            results.append([role,comment.toPython()])
+
+        return results
+
+    def getCommentsByLocation(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?location ?c
+                WHERE {
+                  ?location a lss-usdl:Location ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            l,c = row;
+            location = l.rsplit("#", 2)[1]
+            comment =  c
+            results.append([location,comment.toPython()])
+        return results
+
+    def getCommentsByGoal(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?goal ?c
+                WHERE {
+                  ?goal a lss-usdl:Goal ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            g,c = row;
+            goal = g.rsplit("#", 2)[1]
+            comment =  c
+            results.append([goal,comment.toPython()])
+
+        return results
+
+    def getCommentsByResource(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?resource ?c
+                WHERE {
+                  ?resource a lss-usdl:Resource ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            r,c = row;
+            resource = r.rsplit("#", 2)[1]
+            comment =  c
+            results.append([resource,comment.toPython()])
+
+        return results
+
+    def getCommentsByTime(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?time ?c
+                WHERE {
+                  ?time a lss-usdl:Time ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            t,c = row;
+            time = t.rsplit("#", 2)[1]
+            comment =  c
+            results.append([time,comment.toPython()])
+
+        return results
+
+    def getCommentsByStep(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?step ?c
+                WHERE {
+                  ?step a lss-usdl:Step ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            s,c = row;
+            step = s.rsplit("#", 2)[1]
+            comment =  c
+            results.append([step,comment.toPython()])
+
+        return results
+
+
 
     def quit(self): 
         raise SystemExit()
@@ -610,6 +713,40 @@ class ServiceSystem:
             for step in service[1]:
                 print "Step: " + step
             print("")
+
+    def print_comments(self):
+        results = []
+        role_comments = ss.getCommentsByRole();
+
+        print " "
+        print "- Who"
+        for role,comment in ss.getCommentsByRole():
+            print('{} - {}'.format(role, comment))
+        
+        print " "
+        print "- Where"
+        for location,comment in ss.getCommentsByLocation():
+            print('{} - {}'.format(location, comment))
+
+        print " "
+        print "- Why"
+        for goal,comment in ss.getCommentsByGoal():
+            print('{} - {}'.format(goal, comment))
+
+        print " "
+        print "- How"
+        for step,comment in ss.getCommentsByStep():
+            print('{} - {}'.format(step, comment))
+
+        print " "
+        print "- When"
+        for time,comment in ss.getCommentsByTime():
+            print('{} - {}'.format(time, comment))
+
+        print " "
+        print "- What"
+        for resource,comment in ss.getCommentsByResource():
+            print('{} - {}'.format(resource, comment))
 
 
 
