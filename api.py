@@ -18,9 +18,13 @@ class ServiceSystem:
     '5': ['Get Times',(lambda: ss.print_times())],
     '6': ['Get Processes',(lambda: ss.print_processes())],
     '7': ['Get Resources',(lambda: ss.print_resources())],
+<<<<<<< HEAD
     '8': ['Get Comments',(lambda: ss.print_comments())], 
     '9': ['Get External Knowledge',(lambda: ss.print_externalk())],
     '10': ['Get ITIL Knowledge',(lambda: ss.print_itilk())]
+=======
+    '8': ['Get Comments',(lambda: ss.print_comments())] 
+>>>>>>> d597c241184eb5a8959fce9ed6390f29252d87ac
     } 
 
     def __init__(self, filename):
@@ -774,6 +778,7 @@ class ServiceSystem:
             print('{} - {}'.format(resource, comment))
 
 
+
     def print_itilk(shelf):
         results = ss.getDBPediaResourcesC()
         for result in results:
@@ -786,6 +791,7 @@ class ServiceSystem:
             print 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
 
         print("")
+
 
     #def print_externalk(self):
 
