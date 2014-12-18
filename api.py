@@ -174,11 +174,12 @@ class ServiceSystem:
 
         results = []
         for row in qres:
+            
             i=getattr(row,"int")
             r=getattr(row, "location")
             interaction=i.rsplit("#", 2)[1]
             location = r.rsplit("#", 2)[1]
-            results.append(location)
+            results.append([interaction,location])
 
         return results
 
@@ -222,7 +223,7 @@ class ServiceSystem:
         for row in qres:
             r=getattr(row, "tempEntity")
             i=getattr(row, "int")
-            interaction=i.split("#")[1]
+            interaction=i.split("#")[0]
             time = r.rsplit("#")[1]
             results.append([interaction,time])
 
@@ -510,33 +511,59 @@ class ServiceSystem:
 
         return results
 
-    def getComments_old(self):
-        qres = ServiceSystem.g.query(
-        """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-            SELECT ?c WHERE{?int rdfs:comment ?c }
-            """)
 
-        return qres
-
-    def getComments(self):
+    def getCommentsByRole(self):
         qres = ServiceSystem.g.query(
             """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-                SELECT DISTINCT ?int ?role ?c
+                SELECT DISTINCT ?role ?c
                 WHERE {
-                  ?role a lss-usdl:Role .
-                  ?int rdfs:comment ?c .
+                  ?role a lss-usdl:Role ;
+                  rdfs:comment ?c .
                 }""")
 
         results = []
-        # for row in qres:
-            
-        #     r=getattr(row, "role")
-        #     i=getattr(row, "int")
-        #     interaction=i.rsplit("#", 2)[1]
-        #     role = r.rsplit("#", 2)[1]
-        #     results.append([interaction,role])
+        for row in qres:
+            r,c = row;
+            role = r.rsplit("#", 2)[1]
+            comment =  c
+            results.append([role,comment.toPython()])
 
-        return qres
+        return results
+
+    def getCommentsByLocation(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?location ?c
+                WHERE {
+                  ?location a lss-usdl:Location ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            l,c = row;
+            location = l.rsplit("#", 2)[1]
+            comment =  c
+            results.append([location,comment.toPython()])
+        return results
+
+    def getCommentsByGoal(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?goal ?c
+                WHERE {
+                  ?goal a lss-usdl:Goal ;
+                  rdfs:comment ?c .
+                }""")
+
+        results = []
+        for row in qres:
+            g,c = row;
+            goal = g.rsplit("#", 2)[1]
+            comment =  c
+            results.append([goal,comment.toPython()])
+
+        return results
 
     def quit(self): 
         raise SystemExit()
@@ -591,9 +618,9 @@ class ServiceSystem:
         print("")
 
     def print_roles(self):
-        results = ss.getRoles()
-        for role in results:
-            print "getRoles: " + role
+        results = ss.getInterationsByRole()
+        for result in results:
+            print "getRoles: " + result[0] + ' with role ' + result[1]
         print("")
 
     def print_times(self):
@@ -617,10 +644,23 @@ class ServiceSystem:
             print("")
 
     def print_comments(self):
-        results = ss.getComments()
-        for comment in results:
-            print comment
+        results = []
+        role_comments = ss.getCommentsByRole();
 
+        print " "
+        print "- Who"
+        for role,comment in ss.getCommentsByRole():
+            print('{} - {}'.format(role, comment))
+        
+        print " "
+        print "- Where"
+        for location,comment in ss.getCommentsByLocation():
+            print('{} - {}'.format(location, comment))
+
+        print " "
+        print "- Why"
+        for goal,comment in ss.getCommentsByGoal():
+            print('{} - {}'.format(goal, comment))
 
 
 
