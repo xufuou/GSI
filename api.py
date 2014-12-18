@@ -627,18 +627,20 @@ class ServiceSystem:
     def getCommentsByTime(self):
         qres = ServiceSystem.g.query(
             """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
-                SELECT DISTINCT ?time ?c
+                SELECT DISTINCT ?lss ?int ?time ?t_entity ?c
                 WHERE {
-                  ?time a lss-usdl:Time ;
-                  rdfs:comment ?c .
+                  ?lss lss-usdl:hasInteraction ?int .
+                  ?int lss-usdl:hasTime ?time .
+                  ?time lss-usdl:hasTemporalEntity ?t_entity .
+                  ?time rdfs:comment ?c .
                 }""")
 
         results = []
         for row in qres:
-            t,c = row;
-            time = t.rsplit("#", 2)[1]
-            comment =  c
-            results.append([time,comment.toPython()])
+            l,i,t,t_e,comment = row;
+            time_entity = t_e.rsplit("#", 2)[1]
+            results.append([time_entity,comment.toPython()])
+            
 
         return results
 
