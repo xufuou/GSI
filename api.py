@@ -1,12 +1,24 @@
 from rdflib import Graph, RDF, URIRef,  RDFS #, Literal, BNode
 from SPARQLWrapper import SPARQLWrapper, JSON
 import sys, getopt
+import textwrap 
 
 class ServiceSystem:
     'A API to a Service Systems'
     filename = ''
     g = Graph()
     print g
+
+    commands = { 
+    'q': ['quit',(lambda: ss.quit())],
+    '1': ['Get Interactions',(lambda: ss.print_interations())],
+    '2': ['Get Locations',(lambda: ss.print_locations())],
+    '3': ['Get Goals',(lambda: ss.print_goals())],
+    '4': ['Get Roles',(lambda: ss.print_roles())],
+    '5': ['Get Times',(lambda: ss.print_times())],
+    '6': ['Get Processes',(lambda: ss.print_processes())],
+    '7': ['Get Resources',(lambda: ss.print_resources())]          
+    } 
 
     def __init__(self, filename):
         ServiceSystem.filename = filename
@@ -495,6 +507,85 @@ class ServiceSystem:
 
         return qres
 
+    def quit(self): 
+        raise SystemExit()
+
+    def print_serviceInformation(self):
+        results = ss.getServiceInformation()
+        print "Service System name: " + results[0].rsplit("#", 2)[1]
+        print "Service System description:\n" + results[1]
+        print("")
+
+    def print_getXOR(self):
+        results = ss.getGatewaysAndTypes("XOR")
+        for gateway,tipo in results:
+            print "Gateway: " + gateway + " -> " + tipo 
+        print("")
+
+    def print_getAND(self):
+        results = ss.getGatewaysAndTypes("AND")
+        for gateway,tipo in results:
+            print "Gateway: " + gateway + " -> " + tipo 
+        print("")  
+
+    def print_getOR(self):
+        results = ss.getGatewaysAndTypes("OR")
+        for gateway,tipo in results:
+            print "Gateway: " + gateway + " -> " + tipo 
+        print("")
+
+
+
+    def print_commands(self):
+        for key,values in ServiceSystem.commands.items():
+            print('{} - {}'.format(key, values[0]))
+
+    
+    def print_interations(self):
+        results = ss.getInteractions()
+        for interation in results:
+            print "Interaction: " + interation
+        print("")
+
+    def print_locations(self):
+        results = ss.getLocations()
+        for location in results:
+            print "getLocations: " + location
+        print("")
+
+    def print_goals(self):
+        results = ss.getGoals()
+        for goal in results:
+            print "getGoals: " + goal
+        print("")
+
+    def print_roles(self):
+        results = ss.getRoles()
+        for role in results:
+            print "getRoles: " + role
+        print("")
+
+    def print_times(self):
+        results = ss.getTimes()
+        for time in results:
+            print "getTimes: " + time
+        print("")
+
+    def print_resources(self):
+        results = ss.getResources()
+        for resource in results:
+            print "getResources: " + resource
+        print("")
+
+    def print_processes(self):
+        results = ss.getStepsByInteraction()
+        for service in results:
+            print "Get Steps from: " + service[0]
+            for step in service[1]:
+                print "Step: " + step
+            print("")
+
+
 
 
 
@@ -519,138 +610,102 @@ if __name__ == "__main__":
 
     print 'Input file is: ', inputfile
     print("")
-
     ss = ServiceSystem("file:" + inputfile)
-    results = ss.getServiceInformation()
-    print "Service System name: " + results[0].rsplit("#", 2)[1]
-    print "Service System description:\n" + results[1]
-    print("")
 
-
-    results = ss.getGatewaysAndTypes("XOR")
-    for gateway,tipo in results:
-        print "Gateway: " + gateway + " -> " + tipo 
-    print("")
-
-    results = ss.getGatewaysAndTypes("AND")
-    for gateway,tipo in results:
-        print "Gateway: " + gateway + " -> " + tipo 
-    print("")
-
-    results = ss.getGatewaysAndTypes("OR")
-    for gateway,tipo in results:
-        print "Gateway: " + gateway + " -> " + tipo 
-    print("")
+    choice = None
+    ss.print_commands()
+    while choice is None: 
+        choice = raw_input("Command: ") 
+        if choice in ServiceSystem.commands: 
+            ServiceSystem.commands[choice][1]()
+            choice = None  
+        else: 
+            choice = None 
+            ss.print_commands() 
 
 
 
-    results = ss.getInteractions()
-    for interation in results:
-        print "Interaction: " + interation
-    print("")
-
-    results = ss.getConnectors()
-    for result in results:
-        str = 'getConnectors: (' + result[0] + ' -> ' + result[1] + ') with condition "' + result[2] + '"'''
-        print str
-    print("")
-
-    results = ss.getRoles()
-    for role in results:
-        print "getRoles: " + role
-    print("")
-
-    results = ss.getGoals()
-    for goal in results:
-        print "getGoals: " + goal
-    print("")
-
-    results = ss.getLocations()
-    for location in results:
-        print "getLocations: " + location
-    print("")
-
-    results = ss.getResources()
-    for resource in results:
-        print "getResources: " + resource
-    print("")
-
-    results = ss.getTimes()
-    for time in results:
-        print "getTimes: " + time
-    print("")
 
 
-    results = ss.getStepsByInteraction()
-    for service in results:
-        print "Get Steps from: " + service[0]
-        for step in service[1]:
-            print "Step: " + step
-        print("")
 
 
-    results = ss.getInterationsByRole()
-    for result in results:
-        str = 'getInterationsByRole: ' + result[0] + ' with role ' + result[1]
-        print str
-    print("")
 
-    results = ss.getInteractionResources()
-    for result in results:
-        str = 'getInteractionResources: ' + result[0] + ' with resource ' + result[1]
-        print str
-    print("")
 
-    results = ss.getInteractionResourcesReceived()
-    for result in results:
-        str = 'getInteractionResourcesReceived: ' + result[0] + ' receives resource ' + result[1]
-        print str
-    print("")
 
-    results = ss.getInteractionResourcesCreated()
-    for result in results:
-        str = 'getInteractionResourcesCreated: ' + result[0] + ' creates resource ' + result[1]
-        print str
-    print("")
 
-    results = ss.getFirstInteraction()
-    if results:
-        str = 'getFirstInteraction: ' + results
-        print str
-        print("")
 
-    results = ss.getLastInteraction()
-    if results:
-        str = 'getLastInteraction: ' + results
-        print str
-        print("")
 
-    results = ss.getDBPediaResourcesC()
-    for result in results:
-        str = 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
-        print str
-    print("")
+
+    # results = ss.getConnectors()
+    # for result in results:
+    #     str = 'getConnectors: (' + result[0] + ' -> ' + result[1] + ') with condition "' + result[2] + '"'''
+    #     print str
+    # print("")
+
+
+
+    # results = ss.getInterationsByRole()
+    # for result in results:
+    #     str = 'getInterationsByRole: ' + result[0] + ' with role ' + result[1]
+    #     print str
+    # print("")
+
+    # results = ss.getInteractionResources()
+    # for result in results:
+    #     str = 'getInteractionResources: ' + result[0] + ' with resource ' + result[1]
+    #     print str
+    # print("")
+
+    # results = ss.getInteractionResourcesReceived()
+    # for result in results:
+    #     str = 'getInteractionResourcesReceived: ' + result[0] + ' receives resource ' + result[1]
+    #     print str
+    # print("")
+
+    # results = ss.getInteractionResourcesCreated()
+    # for result in results:
+    #     str = 'getInteractionResourcesCreated: ' + result[0] + ' creates resource ' + result[1]
+    #     print str
+    # print("")
+
+    # results = ss.getFirstInteraction()
+    # if results:
+    #     str = 'getFirstInteraction: ' + results
+    #     print str
+    #     print("")
+
+    # results = ss.getLastInteraction()
+    # if results:
+    #     str = 'getLastInteraction: ' + results
+    #     print str
+    #     print("")
+
+    # results = ss.getDBPediaResourcesC()
+    # for result in results:
+    #     str = 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
+    #     print str
+    # print("")
     
-    results = ss.getDBPediaResourcesR()
-    for result in results:
-        str = 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
-        print str
-    print("")
+    # results = ss.getDBPediaResourcesR()
+    # for result in results:
+    #     str = 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
+    #     print str
+    # print("")
     
-    results = ss.getDBPediaResourcesC()
-    for result in results:
-        dbpediaAbstracts = ss.getDBPediaAbstract(result[2])
-        for dbpediaAbstract in dbpediaAbstracts:
-            str = 'getDBPediaAbstract: ' + result[2] + ': ' +  dbpediaAbstract
-            print str
-            print("")
-    print("")
+    # results = ss.getDBPediaResourcesC()
+    # for result in results:
+    #     dbpediaAbstracts = ss.getDBPediaAbstract(result[2])
+    #     for dbpediaAbstract in dbpediaAbstracts:
+    #         str = 'getDBPediaAbstract: ' + result[2] + ': ' +  dbpediaAbstract
+    #         print str
+    #         print("")
+    # print("")
 
-    results = ss.getDBPediaResourcesR()
-    for result in results:
-        dbpediaAbstracts = ss.getDBPediaAbstract(result[2])
-        for dbpediaAbstract in dbpediaAbstracts:
-            str = 'getDBPediaAbstract: ' + result[2] + ': ' +  dbpediaAbstract
-            print str
-            print("")
-    print("")
+    # results = ss.getDBPediaResourcesR()
+    # for result in results:
+    #     dbpediaAbstracts = ss.getDBPediaAbstract(result[2])
+    #     for dbpediaAbstract in dbpediaAbstracts:
+    #         str = 'getDBPediaAbstract: ' + result[2] + ': ' +  dbpediaAbstract
+    #         print str
+    #         print("")
+    # print("")
