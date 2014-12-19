@@ -1,28 +1,30 @@
 from rdflib import Graph, RDF, URIRef,  RDFS #, Literal, BNode
 from SPARQLWrapper import SPARQLWrapper, JSON
 import sys, getopt
-import textwrap 
+import textwrap
+import collections
 
 class ServiceSystem:
     'A API to a Service Systems'
     filename = ''
     g = Graph()
     print g
+    commands = collections.OrderedDict()
 
-    commands = { 
-    'q': ['quit',                   (lambda: ss.quit())],
-    '1': ['Get Interactions',       (lambda: ss.print_interations())],
-    '2': ['Get Locations',          (lambda: ss.print_locations())],
-    '3': ['Get Goals',              (lambda: ss.print_goals())],
-    '4': ['Get Roles',              (lambda: ss.print_roles())],
-    '5': ['Get Times',              (lambda: ss.print_times())],
-    '6': ['Get Processes',          (lambda: ss.print_processes())],
-    '7': ['Get Resources',          (lambda: ss.print_resources())],
-    '8': ['Get Comments',           (lambda: ss.print_comments())], 
-    '9': ['Get External Knowledge', (lambda: ss.print_externalk())],
-    '10': ['Get ITIL Knowledge',    (lambda: ss.print_itilk())]
-
-    } 
+    commands['q'] = ['quit',                                (lambda: ss.quit())]
+    commands['1'] = ['Get Interactions',                    (lambda: ss.print_interations())]
+    commands['2'] = ['Get Locations',                       (lambda: ss.print_locations())]
+    commands['3'] = ['Get Goals',                           (lambda: ss.print_goals())]
+    commands['4'] = ['Get Roles',                           (lambda: ss.print_roles())]
+    commands['5'] = ['Get Times',                           (lambda: ss.print_times())]
+    commands['6'] = ['Get Processes',                       (lambda: ss.print_processes())]
+    commands['7'] = ['Get Resources',                       (lambda: ss.print_resources())]
+    commands['8'] = ['Get Comments',                        (lambda: ss.print_comments())]
+    commands['9'] = ['Get External Knowledge',              (lambda: ss.print_externalk())]
+    commands['10'] = ['Get ITIL Knowledge',                 (lambda: ss.print_itilk())]
+    commands['11'] = ['Get concepts with owl:sameAs',       (lambda: ss.print_sameAs())]
+    commands['12'] = ['Get concepts with rdfs:subclassOf',  (lambda: ss.print_subclassOf())]
+    commands['13'] = ['Get concepts with rdfs:seeAlso',     (lambda: ss.print_seeAlso())] 
 
     def __init__(self, filename):
         ServiceSystem.filename = filename
@@ -662,6 +664,50 @@ class ServiceSystem:
 
         return results
 
+    def getConceptsSameAs(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?int ?type ?sameAs
+                WHERE {
+                    ?int a ?type ;
+                    owl:sameAs ?sameAs.
+                }""")
+        results = []
+        for row in qres:
+            i,t,s = row
+            sameAs = s.rsplit("#", 2)[1]
+            results.append(sameAs)
+        return results
+
+    def getConceptsSubClassOf(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?int ?type ?subClassOf
+                WHERE {
+                    ?int a ?type ;
+                    rdfs:subClassOf ?subClassOf.
+                }""")
+        results = []
+        for row in qres:
+            i,t,s = row
+            subClassOf = s.rsplit("#", 2)[1]
+            results.append(subClassOf)
+        return results
+
+    def getConceptsSeeAlso(self):
+        qres = ServiceSystem.g.query(
+            """PREFIX  lss-usdl:  <http://w3id.org/lss-usdl/v2#>
+                SELECT DISTINCT ?int ?type ?seeAlso
+                WHERE {
+                    ?int a ?type ;
+                    rdfs:seeAlso ?seeAlso.
+                }""")
+        results = []
+        for row in qres:
+            i,t,s = row
+            seeAlso = s.rsplit("#", 2)[1]
+            results.append(seeAlso)
+        return results
 
 
     def quit(self): 
@@ -778,7 +824,7 @@ class ServiceSystem:
 
 
 
-    def print_itilk(shelf):
+    def print_itilk(self):
         results = ss.getDBPediaResourcesC()
         for result in results:
             print 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
@@ -790,6 +836,27 @@ class ServiceSystem:
             print 'getDBPediaResources: ' + result[0] + ' with resource ' + result[1] + ' -> ' + result[2]
 
         print("")
+
+    def print_sameAs(self):
+        results = ss.getConceptsSameAs()
+        print " "
+        print "- Concepts using owl:sameAs"
+        for result in results:
+            print result
+
+    def print_subclassOf(self):
+        results = ss.getConceptsSubClassOf()
+        print " "
+        print "- Concepts using rdfs:subClassOf"
+        for result in results:
+            print result
+
+    def print_seeAlso(self):
+        results = ss.getConceptsSeeAlso()
+        print " "
+        print "- Concepts using rdfs:seeAlso"
+        for result in results:
+            print result
 
 
     #def print_externalk(self):
