@@ -10,17 +10,17 @@ class ServiceSystem:
     print g
 
     commands = { 
-    'q': ['quit',(lambda: ss.quit())],
-    '1': ['Get Interactions',(lambda: ss.print_interations())],
-    '2': ['Get Locations',(lambda: ss.print_locations())],
-    '3': ['Get Goals',(lambda: ss.print_goals())],
-    '4': ['Get Roles',(lambda: ss.print_roles())],
-    '5': ['Get Times',(lambda: ss.print_times())],
-    '6': ['Get Processes',(lambda: ss.print_processes())],
-    '7': ['Get Resources',(lambda: ss.print_resources())],
-    '8': ['Get Comments',(lambda: ss.print_comments())], 
-    '9': ['Get External Knowledge',(lambda: ss.print_externalk())],
-    '10': ['Get ITIL Knowledge',(lambda: ss.print_itilk())]
+    'q': ['quit',                   (lambda: ss.quit())],
+    '1': ['Get Interactions',       (lambda: ss.print_interations())],
+    '2': ['Get Locations',          (lambda: ss.print_locations())],
+    '3': ['Get Goals',              (lambda: ss.print_goals())],
+    '4': ['Get Roles',              (lambda: ss.print_roles())],
+    '5': ['Get Times',              (lambda: ss.print_times())],
+    '6': ['Get Processes',          (lambda: ss.print_processes())],
+    '7': ['Get Resources',          (lambda: ss.print_resources())],
+    '8': ['Get Comments',           (lambda: ss.print_comments())], 
+    '9': ['Get External Knowledge', (lambda: ss.print_externalk())],
+    '10': ['Get ITIL Knowledge',    (lambda: ss.print_itilk())]
 
     } 
 
